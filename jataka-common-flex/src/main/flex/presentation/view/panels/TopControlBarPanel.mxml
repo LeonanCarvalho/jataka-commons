@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 skinClass="skins.panels.TopControlBarPanelSkin">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.utils.BitFlagUtil;
+			
+			import spark.components.Group;
+			import spark.layouts.supportClasses.LayoutBase;
+			
+			use namespace mx_internal;
+			
+			[Bindable]
+			public var backgroundGradientEntry1:uint;
+			[Bindable]
+			public var backgroundGradientEntry2:uint;
+			[Bindable]
+			public var headerBackgroundVisable:Boolean = true;
+			[Bindable]
+			public var headerHeight:int = 26;
+			/**
+			 *  @private
+			 */
+			mx_internal static const TOP_CONTROLBAR_PROPERTY_FLAG:uint = 1 << 3;
+			
+			/**
+			 *  @private
+			 */
+			mx_internal static const TOP_LAYOUT_PROPERTY_FLAG:uint = 1 << 4;
+			
+			/**
+			 *  @private
+			 *  Several properties are proxied to topControlBarGroup.  However, when topControlBarGroup
+			 *  is not around, we need to store values set on SkinnableContainer.  This object 
+			 *  stores those values.  If topControlBarGroup is around, the values are stored 
+			 *  on the topControlBarGroup directly.  However, we need to know what values 
+			 *  have been set by the developer on the SkinnableContainer (versus set on 
+			 *  the topControlBarGroup or defaults of the topControlBarGroup) as those are values 
+			 *  we want to carry around if the topControlBarGroup changes (via a new skin). 
+			 *  In order to store this info effeciently, topControlBarGroupProperties becomes 
+			 *  a uint to store a series of BitFlags.  These bits represent whether a 
+			 *  property has been explicitely set on this SkinnableContainer.  When the 
+			 *  topControlBarGroup is not around, topControlBarGroupProperties is a typeless 
+			 *  object to store these proxied properties.  When topControlBarGroup is around,
+			 *  topControlBarGroupProperties stores booleans as to whether these properties 
+			 *  have been explicitely set or not.
+			 */
+			mx_internal var topControlBarGroupProperties:Object = { visible: true };
+			
+			[SkinPart(required="true")]
+			/**
+			 *  The skin part that defines the appearance of the 
+			 *  control bar area of the container.
+			 *  By default, the PanelSkin class defines the control bar area to appear at the top 
+			 *  of the header area of the Panel container with a grey background. 
+			 *
+			 *  @see skins.panels.TopControlBarPanelSkin
+			 *  
+			 *  @langversion 3.0
+			 *  @playerversion Flash 10
+			 *  @playerversion AIR 1.5
+			 *  @productversion Flex 4
+			 */
+			public var topControlBarGroup:Group;
+			
+			
+			[ArrayElementType("mx.core.IVisualElement")]
+			/**
+			 *  The set of components to include in the control bar area of the 
+			 *  Panel container. 
+			 *  The location and appearance of the control bar area of the Panel container 
+			 *  is determined by the skins.panels.TopControlBarPanelSkin class. 
+			 *  By default, the PanelSkin class defines the control bar area to appear at the top 
+			 *  of the header area of the Panel container with a grey background. 
+			 *  Create a custom skin to change the default appearance of the control bar.
+			 *
+			 *  @default null
+			 *
+			 *  @see skins.panels.TopControlBarPanelSkin
+			 *  
+			 *  @langversion 3.0
+			 *  @playerversion Flash 10
+			 *  @playerversion AIR 1.5
+			 *  @productversion Flex 4
+			 */
+			public function get topControlBarContent():Array {
+				if (topControlBarGroup)
+					return topControlBarGroup.getMXMLContent();
+				else
+					return topControlBarGroupProperties.controlBarContent;
+			}
+			
+			/**
+			 *  @private
+			 */
+			public function set topControlBarContent(value:Array):void {
+
+				if (topControlBarGroup) {
+					topControlBarGroup.mxmlContent = value;
+					topControlBarGroupProperties = BitFlagUtil.update(topControlBarGroupProperties as uint, TOP_CONTROLBAR_PROPERTY_FLAG, value != null);
+				}
+				else
+					topControlBarGroupProperties.controlBarContent = value;
+				
+				invalidateSkinState();
+			}
+			
+			/**
+			 *  Defines the layout of the control bar area of the container.
+			 *
+			 *  @default HorizontalLayout
+			 *  
+			 *  @langversion 3.0
+			 *  @playerversion Flash 10
+			 *  @playerversion AIR 1.5
+			 *  @productversion Flex 4
+			 */
+			public function get topControlBarLayout():LayoutBase {
+				return (topControlBarGroup) ? topControlBarGroup.layout : topControlBarGroupProperties.layout;
+			}
+			
+			/**
+			 *  @private
+			 */
+			public function set topControlBarLayout(value:LayoutBase):void {
+				if (topControlBarGroup)
+				{
+					topControlBarGroup.layout = value;
+					topControlBarGroupProperties = BitFlagUtil.update(topControlBarGroupProperties as uint, TOP_LAYOUT_PROPERTY_FLAG, true);
+				}
+				else
+					topControlBarGroupProperties.layout = value;
+			}
+			
+			override protected function partAdded(partName:String, instance:Object):void {
+				super.partAdded(partName, instance);
+				
+				if (instance == topControlBarGroup) {
+					// copy proxied values from ctopControlBarGroupProperties (if set) to topControlBarGroup
+					var newTopControlBarGroupProperties:uint = 0;
+					
+					if (topControlBarGroupProperties.controlBarContent !== undefined) {
+						
+						topControlBarGroup.mxmlContent = topControlBarGroupProperties.controlBarContent;
+						newTopControlBarGroupProperties = BitFlagUtil.update(newTopControlBarGroupProperties, TOP_CONTROLBAR_PROPERTY_FLAG, true);
+					}
+					
+					if (topControlBarGroupProperties.layout !== undefined)
+					{
+						topControlBarGroup.layout = topControlBarGroupProperties.layout;
+						newTopControlBarGroupProperties = BitFlagUtil.update(newTopControlBarGroupProperties, TOP_LAYOUT_PROPERTY_FLAG, true);
+					}
+					
+					
+					topControlBarGroupProperties = newTopControlBarGroupProperties;
+				}
+			}
+			
+			override protected function partRemoved(partName:String, instance:Object):void {
+				super.partRemoved(partName, instance);
+				
+				if (instance == topControlBarGroup) {
+					// copy proxied values from topControlBarGroup (if explicitely set) to topControlBarGroupProperties
+					
+					var newTopControlBarGroupProperties:Object = {};
+					
+					if (BitFlagUtil.isSet(topControlBarGroupProperties as uint, TOP_CONTROLBAR_PROPERTY_FLAG))
+						topControlBarGroupProperties.controlBarContent = topControlBarGroup.getMXMLContent();
+					
+					if (BitFlagUtil.isSet(topControlBarGroupProperties as uint, TOP_LAYOUT_PROPERTY_FLAG))
+						topControlBarGroupProperties.layout = topControlBarGroup.layout;
+					
+					topControlBarGroupProperties = newTopControlBarGroupProperties;
+					
+					topControlBarGroup.mxmlContent = null;
+					topControlBarGroup.layout = null;
+				}
+			}
+		]]>
+	</fx:Script>
+</s:Panel>

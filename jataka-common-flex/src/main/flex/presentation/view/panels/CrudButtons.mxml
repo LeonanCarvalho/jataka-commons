@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 width="100%" height="24">
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			public var onSaveClick:Function = null;
+			public var onSaveCloseClick:Function = null;
+			public var onSaveNewClick:Function = null;
+			public var onPrinClick:Function = null;
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:HorizontalLayout paddingTop="4" paddingBottom="0" paddingLeft="6" paddingRight="6" gap="10"/>
+	</s:layout>
+	
+	<s:Image id="saveButton" source="@Embed('/images/crud/save-16.png')" buttonMode="true" 
+			 toolTip="@Resource(bundle='crudpanel', key='crudpanel.crudbuttons.save.tooltip')"
+			 click="{onSaveClick(event)}"/>
+	<s:Group height="24">
+		<s:layout>
+			<s:HorizontalLayout paddingTop="0" paddingBottom="0" gap="4" />
+		</s:layout>
+		
+		<s:Image id="saveClose" source="@Embed('/images/crud/save-close-16.png')" buttonMode="true"
+				 toolTip="@Resource(bundle='crudpanel', key='crudpanel.crudbuttons.saveclose.tooltip')"
+				 click="{onSaveCloseClick(event)}"/>
+		<s:Label id="saveCloseLabel" text="@Resource(bundle='crudpanel', key='crudpanel.crudbuttons.saveclose.label')" paddingTop="4"/>
+	</s:Group>
+	<s:Image id="saveNew" source="@Embed('/images/crud/save-new-16.png')" buttonMode="true"
+			 toolTip="@Resource(bundle='crudpanel', key='crudpanel.crudbuttons.savenew.tooltip')"
+			 click="{onSaveNewClick(event)}"/>
+	<s:Image id="print" source="@Embed('/images/crud/print-16.png')" buttonMode="true"
+			 toolTip="@Resource(bundle='crudpanel', key='crudpanel.crudbuttons.print.tooltip')"
+			 click="{onPrinClick(event)}"/>
+	
+</s:Group>

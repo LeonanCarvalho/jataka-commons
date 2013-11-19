@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:panels="presentation.view.panels.*"
+		 xmlns:ui="http://www.kapit.fr/flex4/ui"
+		 xmlns:grid="presentation.view.grid.*"
+		 width="100%" height="100%" 
+		 creationComplete="search(null)" initialize="init()" >
+	<fx:Script>
+		<![CDATA[	
+			import fr.kapit.flex.ui.spark.advancedTextInput.AdvancedTextInputWithClearButtonSkin;
+			
+			import mx.core.UIComponent;
+			import mx.events.ItemClickEvent;
+			
+			import presentation.events.panels.searchpanel.LinkBarItemClickEvent;
+			import presentation.model.grid.PagingEvent;
+			import presentation.model.panels.SearchablePM;
+			
+			import skins.grid.BlueDataGridSkin;
+			
+
+			[Bindable]
+			public var pmodel:SearchablePM;
+			// Define a property for the conte buttons group component.
+			public var additionalTitleBarPanel:UIComponent;
+			
+			[Bindable]
+			[Embed(source="/images/search/search-16.png")]
+			private static var magnifier:Class;
+			[Bindable]
+			[Embed(source="/images/search/refresh-24.png")]
+			private static var refresh:Class;
+
+			private function init():void {
+				if (additionalTitleBarPanel!=null)
+					additionalTitleBarButtons.addElement(additionalTitleBarPanel);
+			}	
+
+			
+			public function linkBarItemClick(event:ItemClickEvent):void {
+				pmodel.dispatcher(new LinkBarItemClickEvent(event.item.eventType, event.item.subscriber));
+			}
+			
+			private function searchButtonClick(event:MouseEvent):void {
+				// Click on search button should also send a new search request
+				if (event.target is AdvancedTextInputWithClearButtonSkin) {
+					search(event, PagingEvent.getResetPagingEvent());
+				}
+			}
+			
+			private function search(event:MouseEvent, pagingEvent:PagingEvent = null):void {
+				pmodel.paging = paging; // Update paging component before search begin.
+				pmodel.search(pmodel.freeText, pagingEvent);
+			}
+			
+			protected function pagingChangedHandler(event:PagingEvent):void {
+				search(null, event);
+			}
+		]]>
+		
+	</fx:Script>
+	
+	<fx:Metadata>
+		// This resource bundle is used from within SearchablePM and must be declared
+		[ResourceBundle("searchpanel")] 
+	</fx:Metadata>
+	
+	<s:layout>
+		<s:VerticalLayout paddingBottom="2" paddingLeft="2" paddingRight="2" paddingTop="8"/>
+	</s:layout>
+	
+	<s:HGroup id="freeTextSearch" width="100%" horizontalAlign="left" paddingBottom="0"
+			  paddingLeft="0" paddingRight="0" paddingTop="0" verticalAlign="top">
+		<ui:AdvancedTextInput id="freeTextInput" width="500" height="22"
+							  click="{searchButtonClick(event)}" color="black"
+							  enter="{search(null, PagingEvent.getResetPagingEvent())}" icon="{magnifier}"
+							  skinClass="fr.kapit.flex.ui.spark.advancedTextInput.AdvancedTextInputWithClearButtonSkin"
+							  text="@{pmodel.freeText}"/>		
+	</s:HGroup> 
+	
+	<s:VGroup id="searchPanel" width="100%" height="100%">
+		<panels:HeaderLinkBarPanel width="100%" height="100%"> 
+			<panels:topControlBarContent>
+				<s:HGroup width="100%">
+					<mx:LinkBar id="titleLinkBar" borderStyle="none" borderVisible="false"
+								contentBackgroundAlpha="0" contentBackgroundColor="#0473B2"
+								dataProvider="{pmodel.linkBarButtons}" iconField="icon"
+								itemClick="linkBarItemClick(event)"/>
+					
+					<s:Group id="additionalTitleBarButtons" width="100%" height="100%">
+						
+					</s:Group>
+					
+					<s:VGroup paddingTop="3" paddingRight="4" right="1">
+						<s:Image id="rightButton" buttonMode="true"
+							 	click="{search(event, PagingEvent.getResetPagingEvent())}" source="{refresh}" useHandCursor="true"/>
+					</s:VGroup>
+				</s:HGroup>
+			</panels:topControlBarContent>
+			
+			<s:VGroup id="innerDataGridWrapper" width="100%" height="100%">
+				<s:DataGrid id="innerDataGrid" width="100%" height="100%" 
+							columns="{pmodel.columns}"
+							dataProvider="{pmodel.data}" 
+							doubleClickEnabled="true"
+							doubleClick="{pmodel.doubleClick(event, innerDataGrid)}"
+							selectionChange="{pmodel.selectionChangeHandler(event)}"
+							skinClass="skins.grid.BlueDataGridSkin" sortableColumns="true"
+							color="black" borderColor="#0473B2" borderAlpha="0.32"/>
+				
+				<s:HGroup width="100%" verticalAlign="middle" height="20">			
+				   <grid:Paging id="paging" iPaging="{pmodel}" gridPagingChanged="{pagingChangedHandler(event as PagingEvent)}"/>
+				</s:HGroup>
+			</s:VGroup>
+		</panels:HeaderLinkBarPanel>
+	</s:VGroup>
+
+</s:SkinnableContainer>

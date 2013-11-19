@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:GridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx">
+	
+	<fx:Script>
+		<![CDATA[
+			import application.model.NameDescriptionObject;
+			
+			import mx.collections.ArrayList;
+			
+			import utils.ComboBoxUtils;
+			import utils.string.StringUtils;
+		
+			[Bindable]
+			public var references:ArrayList;
+			
+			public function getSelected(data:Object):String{
+				if (data == null || references==null)
+					return StringUtils.EMPTY;
+				
+				var selectedIndex:int = ComboBoxUtils.getSelectedIndex(references, data as int);
+				
+				if (selectedIndex!=ComboBoxUtils.NON_SELECTED_INDEX){
+					return (references.getItemAt(selectedIndex) as NameDescriptionObject).name;
+				}
+				
+				
+				return StringUtils.EMPTY;
+			}
+			
+		]]>
+	</fx:Script>
+		
+	<s:Label text="{getSelected(data)}"/>
+	
+</s:GridItemRenderer>

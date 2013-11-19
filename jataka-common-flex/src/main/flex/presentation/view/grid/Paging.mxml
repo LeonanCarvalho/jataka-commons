@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" 
+		   width="100%" height="30" backgroundAlpha="0" 
+		   horizontalScrollPolicy="off" verticalScrollPolicy="off" 
+		   creationComplete="onCreationComplete()">
+	<fx:Metadata>
+		[Event(name="gridPagingChanged")]
+		[ResourceBundle("searchpanel")] 
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[ 
+			import mx.core.LayoutDirection;
+			import mx.core.UIComponent;
+			
+			import presentation.model.grid.PagingEvent;
+									
+			
+			private var totalResults:int = 0;
+			private var limit:int;
+			private var offset:int;
+			private var reverseSorting:Boolean;
+			private var hasNext:Boolean;
+			
+			[Bindable] 
+			private var _lastButton:Boolean = false;
+			
+			[Bindable]
+			public var labelColor:String="#0473B2";
+			
+			[Bindable]
+			public var iPaging:IPaging;
+			
+			[Bindable]
+			public var useLastButton:Boolean;
+			
+			[Embed('/images/paging/paging_first_off_ltr.png')]
+			private var firstOffLtr:Class; 
+			
+			[Embed('/images/paging/paging_first_on_ltr.png')]
+			private var firstOnLtr:Class;
+			
+			[Embed('/images/paging/paging_first_off_rtl.png')]
+			private var firstOffRtl:Class; 
+			
+			[Embed('/images/paging/paging_first_on_rtl.png')]
+			private var firstOnRtl:Class;
+			
+			[Embed('/images/paging/paging_next_off_ltr.png')]
+			private var nextOffLtr:Class;
+			
+			[Embed('/images/paging/paging_next_off_rtl.png')]
+			private var nextOffRtl:Class;
+			
+			[Embed('/images/paging/paging_next_on_ltr.png')]
+			private var nextOnLtr:Class;
+			
+			[Embed('/images/paging/paging_next_on_rtl.png')]
+			private var nextOnRtl:Class;						
+			
+			[Embed('/images/paging/paging_prev_off_ltr.png')]
+			private var prevOffLtr:Class;
+			
+			[Embed('/images/paging/paging_prev_on_ltr.png')]
+			private var prevOnLtr:Class;	
+			
+			[Embed('/images/paging/paging_prev_off_rtl.png')]
+			private var prevOffRtl:Class;
+			
+			[Embed('/images/paging/paging_prev_on_rtl.png')]
+			private var prevOnRtl:Class;
+			
+			[Embed('/images/paging/paging_last_off_ltr.png')]
+			private var lastOffLtr:Class;
+			
+			[Embed('/images/paging/paging_last_off_rtl.png')]
+			private var lastOffRtl:Class;
+			
+			[Embed('/images/paging/paging_last_on_ltr.png')]
+			private var lastOnLtr:Class;
+			
+			[Embed('/images/paging/paging_last_on_rtl.png')]
+			private var lastOnRtl:Class;
+			
+			private function onCreationComplete():void{
+				//set paging images
+				if(iPaging.getDirection()==LayoutDirection.LTR){
+					firstLink.setStyle("icon",firstOnLtr);
+					firstLink.setStyle("disabledIcon",firstOffLtr);
+					
+					nextLink.setStyle("icon",nextOnLtr);
+					nextLink.setStyle("disabledIcon",nextOffLtr);
+					
+					prevLink.setStyle("icon",prevOnLtr);
+					prevLink.setStyle("disabledIcon",prevOffLtr);
+					
+					lastLink.setStyle("icon",lastOnLtr);
+					lastLink.setStyle("disabledIcon",lastOffLtr);
+				}else{
+					firstLink.setStyle("icon",firstOnRtl);
+					firstLink.setStyle("disabledIcon",firstOffRtl);
+					
+					nextLink.setStyle("icon",nextOnRtl);
+					nextLink.setStyle("disabledIcon",nextOffRtl);
+					
+					prevLink.setStyle("icon",prevOnRtl);
+					prevLink.setStyle("disabledIcon",prevOffRtl);
+					
+					lastLink.setStyle("icon",lastOnRtl);
+					lastLink.setStyle("disabledIcon",lastOffRtl);
+				}
+				currentPage.setStyle("color",labelColor);
+			}
+			
+			public function set showLastButton(val:Boolean):void
+			{
+				_lastButton = val;
+			}
+			
+			[Bindable] public var _maxPagesForPaging:int = 0;
+			
+			public function set maxPagesForPaging(val:int):void
+			{
+				_maxPagesForPaging = val;
+			}
+			
+			// In your module, the parameter object must be called requestParams.
+			// The initial parameters: limit and start(=0) should be set.
+			// You call this init function once you get the results, sending the hasNext property of the xml root.
+			// If the 'last' button is to be enabled, results must be sent as well (reflecting the TOTAL results
+			// of that particular query) 
+			public function init(start:int, limit:int, hasNext:Boolean, reverseOffSet:int=0):void
+			{
+				this.enabled = true;
+				this.totalResults = totalResults;
+				this.limit=limit;
+				this.offset=start;
+				this.hasNext=hasNext;
+				
+				if (reverseSorting){
+					if(reverseOffSet>0){
+						this.offset=reverseOffSet;		
+					}
+					lastLink.enabled=reverseSorting==true?false:true;
+					firstLink.enabled=hasNext==true?true:false;
+					nextLink.enabled=hasNext==false?true:false;
+					prevLink.enabled=hasNext==true?true:false;
+					
+				} else {
+					lastLink.enabled=hasNext==true?true:false;
+					prevLink.enabled = (Number(offset) > 0) ? true : false;
+					
+					firstLink.enabled = (Number(offset) > 0) ? true : false;
+					setLinkButtonColor(firstLink);
+					
+					if (_maxPagesForPaging > 0) // otherwise parameter is null, doesn't exist etc.
+					{
+						// Allow Next only if start won't exceed the max # of pages allowed
+						nextLink.enabled = hasNext && (start + limit < (limit * _maxPagesForPaging));
+						noNextWarning.includeInLayout = noNextWarning.visible = !(offset + limit < (limit * _maxPagesForPaging));
+					} else {
+						nextLink.enabled = hasNext;
+					}
+				}
+				setLinkButtonColor(prevLink);
+				setLinkButtonColor(nextLink);
+				setLinkButtonColor(firstLink);
+				setLinkButtonColor(lastLink);
+				
+				//				lastLink.enabled = hasNext && totalResults > 0 ;
+				//				setLinkButtonColor(lastLink);
+				
+				this.currentPage.text = iPaging.getMessageLocale("searchpanel","searchpanel.paging.pagenum")+ " "+ ((Number(offset) / Number(limit)) + 1).toString();
+			}
+			
+			private function setLinkButtonColor(ll:LinkButton):void {
+				ll.setStyle("color", (ll.enabled ? "#679CFB" : "#000000") );	
+				var baseImgName:String = "paging";						
+			}
+			
+			public function setFirstPage():void {
+				disableAll();				
+				reverseSorting=false;
+				this.offset= 0;
+				dispatchEvent(new PagingEvent(this.offset,reverseSorting));
+			}						
+			
+			public function setNextPage():void {
+				reverseSorting=false;
+				disableAll();
+				this.offset = this.offset.valueOf() + this.limit.valueOf();
+				dispatchEvent(new PagingEvent(this.offset,reverseSorting));
+			}
+			
+			public function setPrevPage():void {	
+				reverseSorting=false;
+				disableAll();				
+				this.offset = this.offset.valueOf() - limit.valueOf();
+				dispatchEvent(new PagingEvent(this.offset,reverseSorting));
+			}
+			
+			public function setLastPage():void {	
+				this.offset=0;
+				reverseSorting=true;
+				dispatchEvent(new PagingEvent(this.offset,reverseSorting));
+				return;
+				if (totalResults > 0)
+				{
+					disableAll();			
+					// the calculation is : int(total_results / results_per_page) * results_per_page
+					// for example if there are 27 results and 25 results per page then the start should be 
+					// int(27 / 25) * 25 = int(1.08) * 25 = 1 * 25 = 25
+					this.offset = int(totalResults / limit.valueOf()) * limit.valueOf();
+					
+					// if the number of results divides to the resultsPerPage exactly (with not remainder)
+					// we actually need to show the previous page. for example: in case of results:25 limit:25, we do
+					// 25 / 25 * 25 = 25  but if we start from 25 we will get an empty page (start 25 shows results 26+)					
+					var remainder:Number = totalResults % limit.valueOf();
+					if (remainder == 0 && this.offset >= limit.valueOf())
+					{this.offset -= limit.valueOf();}
+					
+					
+				}
+			}
+			
+			private function disableAll():void {
+				firstLink.enabled = false;
+				prevLink.enabled = false;
+				nextLink.enabled = false;
+				lastLink.enabled = false;
+			}
+			
+			public function getOffset():int{
+				return offset;
+			}
+		]]>
+	</fx:Script>
+	
+	<s:VGroup gap="0" layoutDirection="{iPaging.getDirection()}" direction="{iPaging.getDirection()}" width="100%" paddingTop="0" paddingBottom="0" verticalAlign="middle">
+		<s:HGroup right="0" verticalAlign="middle" width="100%" layoutDirection="{iPaging.getDirection()}" direction="{iPaging.getDirection()}">											
+			<mx:Spacer width="0" />				
+			<mx:LinkButton width="20" labelPlacement="bottom" id="firstLink" styleName="pagingButton" mouseChildren="false"  paddingRight="0" paddingLeft="0" useHandCursor="{firstLink.enabled}"   textAlign="left" label="" toolTip="{iPaging.getMessageLocale('searchpanel','searchpanel.paging.first')}" enabled="false" click="setFirstPage()"/>
+			<mx:Spacer width="0" />
+			<mx:Label id="noNextWarning" includeInLayout="false" visible="false" text="Only the first {_maxPagesForPaging} pages of results can be displayed. Consider revising your search." />							
+			<mx:LinkButton  id="prevLink" styleName="pagingButton" mouseChildren="false" paddingRight="0" paddingLeft="0" useHandCursor="{prevLink.enabled}"  labelPlacement="bottom" label="" toolTip="{iPaging.getMessageLocale('searchpanel','searchpanel.paging.previous')}"  enabled="false" click="setPrevPage()"/>
+			<mx:Spacer width="5" />			
+			<s:Label text="1" color="{labelColor}" id="currentPage" paddingLeft="0" paddingRight="0" paddingBottom="0" paddingTop="2"/>
+			<mx:Spacer width="0" />			
+			<mx:LinkButton id="nextLink" width="20" styleName="pagingButton" mouseChildren="false" paddingLeft="0" useHandCursor="{nextLink.enabled}" labelPlacement="bottom" paddingRight="0" label="" toolTip="{iPaging.getMessageLocale('searchpanel','searchpanel.paging.next')}" enabled="false" click="setNextPage()"/>
+			<mx:Spacer width="5" />
+			<mx:LinkButton width="20" visible="{useLastButton}" includeInLayout="{useLastButton}" labelPlacement="bottom" id="lastLink" styleName="pagingButton" mouseChildren="false"  paddingRight="0" paddingLeft="0" useHandCursor="{lastLink.enabled}"   textAlign="left" label="" toolTip="{iPaging.getMessageLocale('searchpanel','searchpanel.paging.last')}" enabled="false" click="setLastPage()"/>			
+		</s:HGroup>
+	</s:VGroup>
+</mx:Canvas>

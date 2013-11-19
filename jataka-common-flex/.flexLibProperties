@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
+  <includeClasses>
+    <classEntry path="application.IApplication"/>
+    <classEntry path="application.controller.BaseAPI"/>
+    <classEntry path="application.controller.CrudController"/>
+    <classEntry path="application.controller.GridController"/>
+    <classEntry path="application.model.DomainObject"/>
+    <classEntry path="application.model.NameDescriptionObject"/>
+    <classEntry path="application.model.grid.GridKeywordParameters"/>
+    <classEntry path="application.model.grid.GridParameters"/>
+    <classEntry path="application.model.security.IUser"/>
+    <classEntry path="presentation.events.Subscriber"/>
+    <classEntry path="presentation.events.context.PmContextEvent"/>
+    <classEntry path="presentation.model.BasePM"/>
+    <classEntry path="presentation.model.IApplicationContextPM"/>
+    <classEntry path="presentation.model.context.PmContext"/>
+    <classEntry path="presentation.model.panels.CrudPM"/>
+    <classEntry path="presentation.model.panels.CrudState"/>
+    <classEntry path="presentation.model.panels.ICrud"/>
+    <classEntry path="presentation.model.panels.ISearchable"/>
+    <classEntry path="presentation.model.panels.SearchablePM"/>
+    <classEntry path="presentation.view.combobox.DomainObjectGridRendered"/>
+    <classEntry path="presentation.view.crud.FormItem"/>
+    <classEntry path="presentation.view.dashboard.PodContentBase"/>
+    <classEntry path="presentation.view.grauge.PieGrauge"/>
+    <classEntry path="presentation.view.html.HtmlEditor"/>
+    <classEntry path="presentation.view.lists.IconListItem"/>
+    <classEntry path="presentation.view.lists.IconListItemRendered"/>
+    <classEntry path="presentation.view.panels.CrudPanel"/>
+    <classEntry path="presentation.view.panels.CrudTab"/>
+    <classEntry path="presentation.view.panels.FormHeading"/>
+    <classEntry path="presentation.view.panels.HeaderPanel"/>
+    <classEntry path="presentation.view.panels.SearchPanel"/>
+    <classEntry path="presentation.view.panels.TopControlBarPanel"/>
+    <classEntry path="skins.grid.DefaultGridHeaderRenderer"/>
+    <classEntry path="skins.panels.TopControlBarPanelSkin"/>
+    <classEntry path="utils.ComboBoxUtils"/>
+    <classEntry path="utils.grid.GridUtils"/>
+    <classEntry path="utils.list.ListUtils"/>
+    <classEntry path="skins.dashboard.PodWindowSkin"/>
+    <classEntry path="presentation.view.dashboard.DashboardPod"/>
+    <classEntry path="presentation.view.dashboard.IRefreshablePod"/>
+    <classEntry path="presentation.view.dashboard.DashboardLayoutManager"/>
+    <classEntry path="presentation.view.layout.FlowLayout"/>
+    <classEntry path="presentation.view.grid.Paging"/>
+    <classEntry path="presentation.model.grid.PagingEvent"/>
+    <classEntry path="presentation.view.grid.IPaging"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>

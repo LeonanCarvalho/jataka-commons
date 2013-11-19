@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 controlBarVisible="true" width="400"
+		 visible="false" tabEnabled="true" 
+		 skinClass="skins.MessageWindowSkinError"
+		 styleName="titleWindow" color="#FFFFFF"
+		 creationComplete="init();">
+	
+	<fx:Style source="/styles/popup.css"/>
+			
+	<fx:Script>
+		<![CDATA[
+			import mx.events.CloseEvent;
+			import mx.logging.ILogger;
+			import mx.managers.PopUpManager;
+			
+			import presentation.view.poup.PopUpManagerWrapper;
+			
+			import skins.MessageWindowSkinError;
+			
+			import spark.skins.spark.TitleWindowSkin;
+			
+			import utils.LogUtils;
+			public static const WINDOW_TYPE_INFO:int=1;
+			public static const WINDOW_TYPE_WARNING:int=2;
+			public static const WINDOW_TYPE_ERROR:int=3;
+			public static const WINDOW_TYPE_QUESTION:int=4;
+						
+			public static const BT_EVENT_YES:int=1;
+			public static const BT_EVENT_NO:int=2;
+			
+			private static var LOG:ILogger = LogUtils.getLogger(LogUtils);
+			
+			[Embed('/images/messages/critical.png')]
+			public var errorIcon:Class;	
+			
+			[Embed('/images/messages/info.png')]
+			public var infoIcon:Class;
+			
+			[Embed('/images/messages/warning.png')]
+			public var warningIcon:Class;
+			
+			[Embed('/images/messages/question.gif')]
+			public var questionIcon:Class;
+				
+			public var returnFunction:Function;
+			public var returnNoFunction:Function;
+			
+			// Error message
+			[Bindable] 
+			public var message:String;	
+			[Bindable]
+			public var titleIcon:Class;
+			public var type:int;
+			
+			[Bindable]
+			public var layoutDir:String;
+			[Bindable]
+			public var textAlignment:String;
+
+			private function init():void {	
+   				try {  					
+					PopUpManager.centerPopUp(this);
+					
+					btnClose.drawFocus(true);
+					btnClose.setFocus();					
+					switch (type){
+						case WINDOW_TYPE_INFO:
+							titleIcon=infoIcon;
+							
+							btnNo.width=0;
+							btnYes.width=0;
+						break;
+							case WINDOW_TYPE_WARNING:
+							titleIcon=warningIcon;
+							
+							btnNo.width=0;
+							btnYes.width=0;
+						break;
+							case WINDOW_TYPE_ERROR:
+							titleIcon=errorIcon;
+							
+							btnNo.width=0;
+							btnYes.width=0;
+						break;
+							case WINDOW_TYPE_QUESTION:
+								titleIcon=questionIcon;
+								
+								btnClose.width=0;
+								btnNo.visible=true;
+								btnYes.visible=true;
+								btnClose.visible=false;
+								this.width=300;
+								break;
+					}
+					
+					this.visible=true;
+					if(btnClose.visible==true)
+						btnClose.setFocus();
+   				}
+   				catch(e:Error) {
+					LOG.debug(e.message);
+   				}
+						
+				this.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+				this.addEventListener(CloseEvent.CLOSE, doClose); 
+			}
+
+			private function onKeyDown(event:KeyboardEvent):void {				
+				if (event.keyCode == 13) // Enter
+					btnClose.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+			}
+			
+			private function doClose(event:Event = null):void {
+				this.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+				
+				if(type!=WINDOW_TYPE_QUESTION && returnFunction!=null)
+					returnFunction.call();
+				
+				if(type==WINDOW_TYPE_QUESTION && returnNoFunction!=null)
+					returnNoFunction.call();
+				
+				PopUpManagerWrapper.getInstance().remove(this);
+			}
+			
+			private function doYes(event:Event = null):void{
+				this.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+				PopUpManagerWrapper.getInstance().remove(this);
+				var eventClose:CloseEvent=new CloseEvent(CloseEvent.CLOSE);
+				//eventClose.detail=BT_EVENT_YES;					
+				returnFunction.call();
+			}			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+						
+	</fx:Declarations>
+	<s:VGroup direction="{layoutDir}" layoutDirection="{layoutDir}" width="100%" height="30%" paddingBottom="10" paddingTop="10" paddingLeft="10" paddingRight="10" textAlign="{textAlignment}">
+		<s:Label id="msgLabel" textAlign="{textAlignment}" visible="true" color="#000000" text="{message}" width="100%"  />
+		<s:TextInput id="inputBox" includeInLayout="false" visible="false" width="80%" />
+	</s:VGroup>
+	
+	<s:controlBarContent >
+		<s:HGroup tabEnabled="true" width="100%" horizontalAlign="center" verticalAlign="middle" paddingBottom="0" paddingTop="0" layoutDirection="{layoutDir}">					
+			<s:Button id="btnClose" styleName="closeBt" tabEnabled="true" tabIndex="0" visible="true" click="doClose()" 
+					  label="@Resource(bundle='popup', key='popup.buttons.close')"/>
+			<s:Button id="btnYes" styleName="closeBt" tabEnabled="true" visible="false" click="doYes()" 
+					  label="@Resource(bundle='popup', key='popup.buttons.yes')"/>
+			<s:Button id="btnNo" styleName="closeBt" visible="false" click="doClose()" 
+					  label="@Resource(bundle='popup', key='popup.buttons.no')"/>
+		</s:HGroup>
+	</s:controlBarContent>
+</s:TitleWindow>

@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.jatakasource.commons</groupId>
+		<artifactId>jataka-common-parent</artifactId>
+		<version>1.1.0</version>
+	</parent>
+
+	<groupId>org.jatakasource.commons.flex</groupId>
+	<artifactId>jataka-flex-parent</artifactId>
+	<packaging>pom</packaging>
+
+	<name>COMMON ${project.artifactId} :: Flex parent pom</name>
+
+	<profiles>
+		<profile>
+			<id>windows</id>
+			<activation>
+				<os>
+					<family>Windows</family>
+				</os>
+			</activation>
+			<properties>
+				<flex.home>C:\opt\flex-sdks\4.5.1</flex.home>
+				<flex.wrapper.target>target</flex.wrapper.target>
+			</properties>
+		</profile>
+	
+		<profile>
+			<id>Linux</id>
+			<activation>
+				<os>
+					<family>unix</family>
+				</os>
+			</activation>
+
+			<properties>
+				<flex.home>/opt/flex-sdks/4.5.1</flex.home>
+				<flex.wrapper.target>${basedir}/target</flex.wrapper.target>
+			</properties>
+		</profile>
+	</profiles>
+	
+	<build>
+		<sourceDirectory>${basedir}/src/main/flex</sourceDirectory>
+		<resources>
+			<resource>
+				<directory>${basedir}/src/main/resources</directory>
+			</resource>
+		</resources>
+
+		<plugins>
+			<plugin>
+				<groupId>org.sonatype.flexmojos</groupId>
+				<artifactId>flexmojos-maven-plugin</artifactId>
+				<version>${flex.mojos.version}</version>
+				<extensions>true</extensions>
+
+				<configuration>
+					<configurationReport>true</configurationReport>
+					<sourcePaths>
+						<path>${project.basedir}/src/main/flex/</path>
+						<path>${project.basedir}/src/main/resources/</path>
+						<path>${project.basedir}/src/main/modules/</path>
+						<path>${project.basedir}/src/main/locales/{locale}</path>
+					</sourcePaths>
+
+					<resourceBundlePath>${basedir}/src/main/locales/{locale}</resourceBundlePath>
+					<allowSourcePathOverlap>true</allowSourcePathOverlap>
+
+					<definesDeclaration>
+						<property>
+							<name>CONFIG::DEBUGIP</name>
+							<value>"127.0.0.1"</value>
+						</property>
+					</definesDeclaration>
+
+					<!-- Fix for Mojos's < 4 -->
+					<configFiles>
+						<configFile>flex-config-swf-version-11.xml</configFile>
+					</configFiles>
+
+					<compiledLocales>
+						<locale>en_US</locale>
+					</compiledLocales>
+				</configuration>
+
+				<dependencies>
+					<dependency>
+						<groupId>com.adobe.flex</groupId>
+						<artifactId>compiler</artifactId>
+						<version>${flex.version}</version>
+						<type>pom</type>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<!-- Flex dependencies -->
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>common-framework</artifactId>
+			<version>${flex.version}</version>
+			<type>pom</type>
+		</dependency>
+
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>core</artifactId>
+			<version>${flex.version}</version>
+			<type>swc</type>
+		</dependency>
+
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>framework</artifactId>
+			<version>${flex.version}</version>
+			<type>swc</type>
+		</dependency>
+
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>framework</artifactId>
+			<version>${flex.version}</version>
+			<type>rb.swc</type>
+			<classifier>en_US</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>osmf</artifactId>
+			<version>${flex.version}</version>
+			<type>swc</type>
+		</dependency>
+
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>osmf</artifactId>
+			<version>${flex.version}</version>
+			<type>rb.swc</type>
+			<classifier>en_US</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>rpc</artifactId>
+			<version>${flex.version}</version>
+			<type>swc</type>
+		</dependency>
+
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>rpc</artifactId>
+			<version>${flex.version}</version>
+			<type>rb.swc</type>
+			<classifier>en_US</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>spark</artifactId>
+			<version>${flex.version}</version>
+			<type>swc</type>
+		</dependency>
+
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>spark</artifactId>
+			<version>${flex.version}</version>
+			<type>rb.swc</type>
+			<classifier>en_US</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>sparkskins</artifactId>
+			<version>${flex.version}</version>
+			<type>swc</type>
+		</dependency>
+
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>textLayout</artifactId>
+			<version>${flex.version}</version>
+			<type>swc</type>
+		</dependency>
+
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>playerglobal</artifactId>
+			<version>${flex.version}</version>
+			<classifier>10.2</classifier>
+			<type>swc</type>
+		</dependency>
+		<dependency>
+			<groupId>flexxb</groupId>
+			<artifactId>flexxb</artifactId>
+			<version>2.3.0</version>
+			<type>swc</type>
+		</dependency>
+		<dependency>
+			<groupId>klovis</groupId>
+			<artifactId>klovis-ui</artifactId>
+			<version>1.0.0.1</version>
+			<type>swc</type>
+		</dependency>
+		<dependency>
+			<groupId>flexlib</groupId>
+			<artifactId>flexlib</artifactId>
+			<version>2.5</version>
+			<type>swc</type>
+		</dependency>
+		<dependency>
+			<groupId>parsley</groupId>
+			<artifactId>parsley-core</artifactId>
+			<version>3.0.0</version>
+			<type>swc</type>
+		</dependency>
+		<dependency>
+			<groupId>parsley</groupId>
+			<artifactId>parsley-flex</artifactId>
+			<version>3.0.0</version>
+			<type>swc</type>
+		</dependency>
+		<dependency>
+			<groupId>spicelib</groupId>
+			<artifactId>spicelib-commands</artifactId>
+			<version>3.1.1</version>
+			<type>swc</type>
+		</dependency>
+		<dependency>
+			<groupId>spicelib</groupId>
+			<artifactId>spicelib-reflect</artifactId>
+			<version>3.0.0</version>
+			<type>swc</type>
+		</dependency>
+		<dependency>
+			<groupId>spicelib</groupId>
+			<artifactId>spicelib-util</artifactId>
+			<version>3.1.0</version>
+			<type>swc</type>
+		</dependency>
+		<dependency>
+			<groupId>spicelib</groupId>
+			<artifactId>spicelib-xml-mapper</artifactId>
+			<version>3.0.2</version>
+			<type>swc</type>
+		</dependency>
+		
+		<!-- flexible dashboard -->
+		<dependency>
+			<groupId>flexible</groupId>
+			<artifactId>dashboard-lib</artifactId>
+			<version>1.0.0</version>
+			<type>swc</type>
+		</dependency>
+		
+	</dependencies>
+	
+	<pluginRepositories>
+		<pluginRepository>
+			<id>flex-mojos-repository2</id>
+			<url>http://repository.sonatype.org/content/groups/flexgroup</url>
+		</pluginRepository>
+	</pluginRepositories>
+	
+	<repositories>
+		<repository>
+			<id>flexmojos repository</id>
+			<url>http://repository.sonatype.org/content/groups/flexgroup</url>
+		</repository>
+	</repositories>
+
+</project>
+

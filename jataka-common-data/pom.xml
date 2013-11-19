@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.jatakasource.commons</groupId>
+		<artifactId>jataka-common-parent</artifactId>
+		<version>1.1.0</version>
+	</parent>
+
+	<artifactId>jataka-common-data</artifactId>
+	<version>1.1.0</version>
+	<packaging>jar</packaging>
+
+	<name>COMMON ${project.artifactId} :: Schema creator jar</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.jatakasource.commons</groupId>
+			<artifactId>jataka-common-svc-impl</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jatakasource.commons</groupId>
+			<artifactId>jataka-common-dao-impl</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+
+		<!-- Required for Spring controllers (no interfaces) -->
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib-nodep</artifactId>
+		</dependency>
+
+		<!-- Required for CSV files -->
+		<dependency>
+			<groupId>net.sf.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>args4j</groupId>
+			<artifactId>args4j</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+		</dependency>
+
+	</dependencies>
+</project>
+

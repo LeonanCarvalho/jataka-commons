@@ -1,0 +1,613 @@
+<!-- WYSIWYG Component for rich text rendering. --> 
+<!-- Limitations: -->  
+<!-- 1) Several formats are not suported when export/import as html: line/rtl-ltr-->
+<!-- 2) import/export as text layout is adobe internal format. -->
+
+<panels:TopControlBarPanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+						   xmlns:s="library://ns.adobe.com/flex/spark"
+						   xmlns:mx="library://ns.adobe.com/flex/mx"
+						   xmlns:panels="presentation.view.panels.*"
+						   xmlns:layout="presentation.view.layout.*"
+						   xmlns:code="http://code.google.com/p/flexlib/"
+						   width="100%" height="100%" minWidth="400"
+						   backgroundGradientEntry1="#E2E2E2" 
+						   backgroundGradientEntry2="#D9D9D9"
+						   initialize="init()"
+						   keyDown="onKeyDownHandler(event)"
+						   headerHeight="26">
+	<fx:Script>
+		<![CDATA[
+			import flash.text.engine.FontPosture;
+			import flash.text.engine.FontWeight;
+			
+			import flashx.textLayout.container.ContainerController;
+			import flashx.textLayout.conversion.ConversionType;
+			import flashx.textLayout.conversion.TextConverter;
+			import flashx.textLayout.edit.EditManager;
+			import flashx.textLayout.edit.ElementRange;
+			import flashx.textLayout.edit.IEditManager;
+			import flashx.textLayout.edit.SelectionState;
+			import flashx.textLayout.elements.FlowElement;
+			import flashx.textLayout.elements.LinkElement;
+			import flashx.textLayout.elements.ListElement;
+			import flashx.textLayout.elements.ListItemElement;
+			import flashx.textLayout.elements.ParagraphElement;
+			import flashx.textLayout.elements.SpanElement;
+			import flashx.textLayout.elements.TextFlow;
+			import flashx.textLayout.events.SelectionEvent;
+			import flashx.textLayout.events.StatusChangeEvent;
+			import flashx.textLayout.formats.Direction;
+			import flashx.textLayout.formats.ITextLayoutFormat;
+			import flashx.textLayout.formats.ListStylePosition;
+			import flashx.textLayout.formats.ListStyleType;
+			import flashx.textLayout.formats.TextAlign;
+			import flashx.textLayout.formats.TextDecoration;
+			import flashx.textLayout.formats.TextLayoutFormat;
+			import flashx.textLayout.operations.ApplyLinkOperation;
+			import flashx.textLayout.operations.ClearFormatOperation;
+			import flashx.undo.UndoManager;
+			
+			import mx.controls.List;
+			import mx.events.ColorPickerEvent;
+			import mx.managers.PopUpManager;
+			
+			import presentation.view.html.helpers.SelectionHelper;
+			
+			import spark.components.Group;
+			import spark.events.IndexChangeEvent;
+			import spark.utils.TextFlowUtil;
+			
+			import utils.list.ListUtils;
+			import utils.string.StringUtils;
+			
+			private static const DEFAULT_FONT_FAMILY:String = "Arial";
+			private static const DEFAULT_FONT_SIZE:String = "12";
+			
+			// container to hold the text
+			private var _container:Sprite;
+			private var _textFlow:TextFlow;
+			
+			public function get textLaout():String {
+				if (editor)
+					return TextConverter.export(editor.textFlow, TextConverter.TEXT_LAYOUT_FORMAT, ConversionType.STRING_TYPE).toString();
+				return StringUtils.EMPTY;
+			}
+			
+			public function set textLaout(html:String):void {
+				textFlow = TextConverter.importToFlow(html, TextConverter.TEXT_LAYOUT_FORMAT);	
+			}
+			
+			public function get html():String {
+				if (editor)
+					return TextConverter.export(editor.textFlow, TextConverter.TEXT_FIELD_HTML_FORMAT, ConversionType.STRING_TYPE).toString();
+				return StringUtils.EMPTY;
+			}
+			
+			public function set html(html:String):void {
+				textFlow = TextConverter.importToFlow(html, TextConverter.TEXT_FIELD_HTML_FORMAT);	
+			}
+			
+			private function init():void {
+				// create a sprite to hold the TextLines
+				_container = new Sprite();	
+			}
+			
+			/** The TextFlow to edit. */
+			public function get textFlow():TextFlow { 
+				return _textFlow;
+			}
+			
+			public function set textFlow(newFlow:TextFlow):void {
+				// If null value is passed use testflow from editor.  
+				if (newFlow == null)
+					newFlow = editor.textFlow;
+				
+				// clear any old flow if present
+				if (_textFlow) {
+					clearText(_textFlow);
+					_textFlow = null;
+				}
+				
+				_textFlow = newFlow;
+				if (_textFlow && _textFlow.flowComposer) {
+					_textFlow.flowComposer.addController(new ContainerController(_container,editor.width,editor.height));
+					
+					// setup event listeners for selection changed and ILG loaded
+					_textFlow.addEventListener(SelectionEvent.SELECTION_CHANGE, selectionChangeListener,false,0,true);
+					_textFlow.addEventListener(StatusChangeEvent.INLINE_GRAPHIC_STATUS_CHANGE, graphicStatusChangeEvent,false,0,true);
+					
+					// make _textFlow editable with undo 
+					_textFlow.interactionManager = new EditManager(new UndoManager());
+					// initialize with a selection before the first character
+					_textFlow.interactionManager.selectRange(0,0);
+					
+					// compose the new textFlow and give it focus
+					_textFlow.flowComposer.updateAllControllers();
+					_textFlow.interactionManager.setFocus();
+				}
+				
+				editor.textFlow = _textFlow;
+			}
+			
+			/** Receives an event any time an ILG with a computed size finishes loading. */
+			private function graphicStatusChangeEvent(evt:StatusChangeEvent):void {
+				// recompose if the evt is from an element in this textFlow
+				if (_textFlow && evt.element.getTextFlow() == _textFlow)
+					_textFlow.flowComposer.updateAllControllers();
+			}
+			
+			/** Receives an event any time the selection is changed.  Update the UI */
+			private function selectionChangeListener(e:SelectionEvent):void { 				
+				if (!e.selectionState) return;
+				var selectionState:SelectionState = e.selectionState;
+				var selectedElementRange:ElementRange = ElementRange.createElementRange(selectionState.textFlow, selectionState.absoluteStart, selectionState.absoluteEnd);
+				
+				// set display according to the values at the beginning of the selection range.  For point selection/characterFormat use getCommonCharacterFormat as that tracks pending attributes waiting for the next character
+				var characterFormat:ITextLayoutFormat = _textFlow.interactionManager.activePosition == _textFlow.interactionManager.anchorPosition ? _textFlow.interactionManager.getCommonCharacterFormat() : selectedElementRange.characterFormat;
+				var paragraphFormat:ITextLayoutFormat = selectedElementRange.paragraphFormat;
+				var containerFormat:ITextLayoutFormat = selectedElementRange.containerFormat;
+				
+				updateComboBox(fontCombo, characterFormat.fontFamily);
+				updateComboBox(sizeCombo, characterFormat.fontSize);
+			
+				boldBtn.selected = (characterFormat.fontWeight == FontWeight.BOLD);
+				italBtn.selected = (characterFormat.fontStyle == FontPosture.ITALIC);
+				underBtn.selected = (characterFormat.textDecoration == TextDecoration.UNDERLINE);
+				colorCP.selectedColor = characterFormat.color;
+				lineBtn.selected = characterFormat.lineThrough;
+				
+				switch (paragraphFormat.direction) {
+					case Direction.LTR:
+						directionButtonBar.selectedIndex = 0;
+						break;
+					case Direction.RTL:
+						directionButtonBar.selectedIndex = 1;
+						break;
+					default:
+						txtAlignButtonBar.selectedIndex = -1;
+						break;
+				}
+					
+				switch (paragraphFormat.textAlign) {
+					case TextAlign.LEFT:
+						txtAlignButtonBar.selectedIndex = 0;
+						break;
+					case TextAlign.CENTER:
+						txtAlignButtonBar.selectedIndex = 1;
+						break;
+					case TextAlign.RIGHT:
+						txtAlignButtonBar.selectedIndex = 2;
+						break;
+					case TextAlign.JUSTIFY:
+						txtAlignButtonBar.selectedIndex = 3;
+						break;
+					default:
+						txtAlignButtonBar.selectedIndex = -1;
+						break;
+				}
+			}
+
+			/** Helper function to update a comboBox in the UI */
+			private function updateComboBox(box:DropDownList, val:String):void {
+				for (var i:int = 0; i < box.dataProvider.length; i++) {
+					if (box.dataProvider.getItemAt(i) as String == val)
+					{
+						box.selectedIndex = i;
+						return;
+					}
+				}
+			}
+			
+			protected function onFontChangeHandler(evt:IndexChangeEvent):void {
+				var txtLayFmt:TextLayoutFormat = editor.getFormatOfRange(null,  editor.selectionAnchorPosition, editor.selectionActivePosition);
+				txtLayFmt.fontFamily = fontCombo.selectedItem;
+				editor.setFormatOfRange(txtLayFmt, editor.selectionAnchorPosition, editor.selectionActivePosition);
+				editor.setFocus();
+			}
+			
+			protected function onSizeChangeHandler(evt:IndexChangeEvent):void {
+				var txtLayFmt:TextLayoutFormat = editor.getFormatOfRange(null,  editor.selectionAnchorPosition, editor.selectionActivePosition);
+				txtLayFmt.fontSize = sizeCombo.selectedItem;
+				editor.setFormatOfRange(txtLayFmt, editor.selectionAnchorPosition, editor.selectionActivePosition);
+				editor.setFocus();
+			}
+			
+			protected function onBoldClickHandler(evt:MouseEvent):void {
+				var txtLayFmt:TextLayoutFormat = editor.getFormatOfRange(null,  editor.selectionAnchorPosition, editor.selectionActivePosition);
+				txtLayFmt.fontWeight = (txtLayFmt.fontWeight == FontWeight.BOLD) ? FontWeight.NORMAL : FontWeight.BOLD;
+				editor.setFormatOfRange(txtLayFmt, editor.selectionAnchorPosition, editor.selectionActivePosition);
+				editor.setFocus();
+			
+			}
+			
+			protected function onItalicClickHandler(evt:MouseEvent):void {
+				var txtLayFmt:TextLayoutFormat = editor.getFormatOfRange(null,  editor.selectionAnchorPosition, editor.selectionActivePosition);
+				txtLayFmt.fontStyle = (txtLayFmt.fontStyle == FontPosture.ITALIC) ? FontPosture.NORMAL : FontPosture.ITALIC;
+				editor.setFormatOfRange(txtLayFmt, editor.selectionAnchorPosition, editor.selectionActivePosition);
+				editor.setFocus();
+			}
+			
+			protected function onUnderLineClickHandler(evt:MouseEvent):void {
+				var txtLayFmt:TextLayoutFormat = editor.getFormatOfRange(null,  editor.selectionAnchorPosition, editor.selectionActivePosition);
+				txtLayFmt.textDecoration = (txtLayFmt.textDecoration == TextDecoration.UNDERLINE) ? TextDecoration.NONE : TextDecoration.UNDERLINE;
+				editor.setFormatOfRange(txtLayFmt, editor.selectionAnchorPosition, editor.selectionActivePosition);
+				editor.setFocus();
+			}
+			
+			/**
+			 * Set line for selected text.
+			 **/
+			protected function onLineClickHandler(evt:MouseEvent):void {
+				var txtLayFmt:TextLayoutFormat = editor.getFormatOfRange(null,  editor.selectionAnchorPosition, editor.selectionActivePosition);
+				txtLayFmt.lineThrough = lineBtn.selected;
+				editor.setFormatOfRange(txtLayFmt, editor.selectionAnchorPosition, editor.selectionActivePosition);
+				editor.setFocus();	
+			}
+			
+			/**
+			 * Change Color for selected text.
+			 **/
+			protected function onColorChangeHandler(evt:ColorPickerEvent):void {
+				var txtLayFmt:TextLayoutFormat = editor.getFormatOfRange(null,  editor.selectionAnchorPosition, editor.selectionActivePosition);
+				txtLayFmt.color = colorCP.selectedColor;
+				editor.setFormatOfRange(txtLayFmt, editor.selectionAnchorPosition, editor.selectionActivePosition);
+				editor.setFocus();
+			}
+			
+			protected function onAlignChangeHandler(evt:IndexChangeEvent):void {
+				if (txtAlignButtonBar.selectedItem){
+					var txtLayFmt:TextLayoutFormat = editor.getFormatOfRange(null,  editor.selectionAnchorPosition, editor.selectionActivePosition);
+					txtLayFmt.textAlign = txtAlignButtonBar.selectedItem.value;
+					editor.setFormatOfRange(txtLayFmt, editor.selectionAnchorPosition, editor.selectionActivePosition);
+					editor.setFocus();
+				}
+			}
+			
+			
+			protected function onChangeDirection(evt:IndexChangeEvent):void {
+				if (directionButtonBar.selectedItem){
+					changeDirection(directionButtonBar.selectedItem.value);
+				}
+			}
+			
+			/** 
+			 * Set direction on the rootElement.  
+			 * This effects both columnDirection and default reading order. 
+			 **/
+			private function changeDirection(newDirection:String):void {
+				var txtLayFmt:TextLayoutFormat = editor.getFormatOfRange(null,  editor.selectionAnchorPosition, editor.selectionActivePosition);
+				txtLayFmt.direction = newDirection;
+				editor.setFormatOfRange(txtLayFmt, editor.selectionAnchorPosition, editor.selectionActivePosition);
+				editor.setFocus();
+			}
+			
+			/** 
+			 * Set direction on the rootElement to right-to-left.  
+			 **/
+			private function onRtl(evt:MouseEvent):void {
+				changeDirection(Direction.RTL);
+			}
+			
+			/** 
+			 * Set direction on the rootElement to left-to-right  
+			 **/
+			private function onLtr(evt:MouseEvent):void {
+				changeDirection(Direction.LTR);
+			}
+			
+			/**
+			 * Create <a> link for selected text.
+			 **/
+			public function onLinkChangeHandler(evt:MouseEvent, href:String):void {
+				// Also check that user selection is mor then one character
+				if (_textFlow && _textFlow.interactionManager is IEditManager && editor.selectionActivePosition != editor.selectionAnchorPosition){
+					
+					// Create lisk according to user input
+					new ApplyLinkOperation(getSelectionState(), href, "_blank", true).doOperation();
+
+					_textFlow.flowComposer.updateAllControllers();					
+				}
+			}
+
+		
+			protected function openLinkEditor(evt:MouseEvent):void {
+				var linkPopup:LinkPopup = PopUpManager.createPopUp(this, LinkPopup, true) as LinkPopup;
+				linkPopup.editor = this;	
+			
+				PopUpManager.centerPopUp(linkPopup);
+			}
+			
+			/**
+			 * Create Bullet list object.
+			 **/ 
+			protected function onBulletHandler(evt:MouseEvent):void {
+				// Create lisk according to user input
+				var list:ListElement = getListElement(ListStyleType.DISC);
+				
+				var item:ListItemElement = new ListItemElement();
+				list.addChild(item)
+			}
+				
+			
+			
+			/**
+			 * Create number list object
+			 **/ 
+			protected function onListHandler(evt:MouseEvent):void {
+				// Create lisk according to user input
+				var list:ListElement = getListElement(ListStyleType.DECIMAL);
+				
+				var item:ListItemElement = new ListItemElement();
+				list.addChild(item)
+			}
+			
+			/**
+			 * Clear any formating from selected text.
+			 **/ 
+			protected function onClearClickHandler(evt:MouseEvent):void {
+				// Also check that user selection is mor then one character
+				if (_textFlow && _textFlow.interactionManager is IEditManager && editor.selectionActivePosition != editor.selectionAnchorPosition){
+					
+					var selectionState:SelectionState = getSelectionState();
+					var selectedElementRange:ElementRange = ElementRange.createElementRange(selectionState.textFlow, selectionState.absoluteStart, selectionState.absoluteEnd);
+					
+					var characterFormat:ITextLayoutFormat = selectedElementRange.characterFormat;
+					var paragraphFormat:ITextLayoutFormat = selectedElementRange.paragraphFormat;
+					var containerFormat:ITextLayoutFormat = selectedElementRange.containerFormat;
+					
+					var clearFormatOperation:ClearFormatOperation = new ClearFormatOperation(selectionState, characterFormat, paragraphFormat, containerFormat);
+					clearFormatOperation.doOperation();
+
+					editor.setFocus();
+				}
+			}
+			
+			
+			/**
+			 * Clear all document. 
+			 **/ 
+			protected function onNewClickHandler(evt:MouseEvent):void {
+				clearText(editor.textFlow);
+			}
+			
+			private function clearText(textFlow:TextFlow):void {
+				textFlow.splitAtPosition(0);
+			}
+			
+			/**
+			 * Create an array of available font families
+			 */ 
+			static private function populateFontFamily():Array {
+				// really this returns an array of fonts - would be nice to strip it down to just the families
+				var fonts:Array = Font.enumerateFonts(true);
+				var fontfamily:Array = new Array();
+				fonts.sortOn("fontName", Array.CASEINSENSITIVE);
+				for(var i:int = 0; i< fonts.length; i++)
+				{
+					// trace(fonts[i].fontName);
+					fontfamily.push(fonts[i].fontName);
+				}
+				return fontfamily;
+			}
+			
+			/**
+			 * Create an array of font sizes
+			 */ 
+			static private function populateFontSize():Array {
+				// really this returns an array of fonts - would be nice to strip it down to just the families
+				var fontSizes:Array = new Array();
+
+				fontSizes.push("8");
+				fontSizes.push("10");
+				fontSizes.push("12");
+				fontSizes.push("14");
+				fontSizes.push("16");
+				fontSizes.push("24");
+				fontSizes.push("36");
+				fontSizes.push("72");
+				
+				return fontSizes;
+			}
+			
+			// When this component is used in a SuperTabPanel we need to stop Propagation for arrow keys.
+			// This prevent change focous on any arrow KeyboardEvent. 
+			protected function onKeyDownHandler(event:KeyboardEvent):void {
+				if (event.keyCode == Keyboard.LEFT || event.keyCode == Keyboard.RIGHT || event.keyCode == Keyboard.UP || event.keyCode == Keyboard.DOWN ){
+					event.stopPropagation();	
+				}
+			}
+			
+			protected function getSelectionState():SelectionState{
+				return new SelectionState(_textFlow, editor.selectionAnchorPosition, editor.selectionActivePosition);
+			}
+			
+			private function getListElement(listStyleType:String):ListElement {
+				var lists:Array = SelectionHelper.getSelectedLists(editor.textFlow, false);
+				var list:ListElement;
+				
+				// Create new List
+				if (lists==null || lists.length==0){
+					list = new ListElement();
+					list.listStyleType=listStyleType; // note you don’t need to create a new TextLayoutFormat
+					
+					list.listStylePosition = ListStylePosition.INSIDE;
+					list.paragraphEndIndent=1;     
+				
+					if (_textFlow.interactionManager is EditManager)
+						(_textFlow.interactionManager as EditManager).createList(list);
+				}else{
+					return lists[0];
+				}
+				
+				return list;
+			}
+		]]>
+	</fx:Script>
+
+	<panels:topControlBarLayout> 
+		<layout:FlowLayout horizontalGap="2"/> 
+	</panels:topControlBarLayout>
+	
+	<panels:topControlBarContent>
+		
+		<code:Docker width="100%" dockingAreaStyleName="dockingArea"
+					 horizontalScrollPolicy="off" paddingBottom="0" rowStyleName="dockingRow">
+			
+			<s:Group id="topControlBarGroup" width="100%" >
+				
+				<s:HGroup id="firstRow" paddingBottom="3" paddingTop="3" paddingLeft="2" verticalAlign="middle">
+					<code:DockableToolBar id="styleToolbar" label="Style" draggable="false">
+						<s:HGroup gap="3">
+							<s:ButtonBarButton id="boldBtn" width="20" height="20"
+											   click="onBoldClickHandler(event);"
+											   cornerRadius="0"
+											   icon="@Embed('/images/html/bold-20.png')"
+											   toolTip="@Resource(bundle='htmleditor', key='htmleditor.toolbar.bold')"/>
+							<s:ButtonBarButton id="italBtn" width="20" height="20"
+											   click="onItalicClickHandler(event);"
+											   cornerRadius="0"
+											   icon="@Embed('/images/html/italic-20.png')"
+											   toolTip="@Resource(bundle='htmleditor', key='htmleditor.toolbar.italic')"/>
+							<s:ButtonBarButton id="underBtn" width="20" height="20"
+											   click="onUnderLineClickHandler(event);"
+											   cornerRadius="0"
+											   icon="@Embed('/images/html/underline-20.png')"
+											   toolTip="@Resource(bundle='htmleditor', key='htmleditor.toolbar.underline')"/>
+							<s:ButtonBarButton id="lineBtn" width="20" height="20"
+											   click="onLineClickHandler(event);"
+											   cornerRadius="0"
+											   icon="@Embed('/images/html/line-20.png')"
+											   toolTip="@Resource(bundle='htmleditor', key='htmleditor.toolbar.line')"/>
+						</s:HGroup>
+					</code:DockableToolBar>
+						
+					<s:Line height="90%">
+						<s:stroke>
+							<s:SolidColorStroke caps="square" color="black" weight="1"/>
+						</s:stroke>
+					</s:Line>
+					
+					<mx:ColorPicker id="colorCP" width="20" height="20"
+									change="onColorChangeHandler(event);"
+									toolTip="@Resource(bundle='htmleditor', key='htmleditor.toolbar.colorcp')"/>
+					
+					<s:Line height="90%">
+						<s:stroke>
+							<s:SolidColorStroke caps="square" color="black" weight="1"/>
+						</s:stroke>
+					</s:Line>
+					
+					<code:DockableToolBar id="txtAlignToolbar" label="Align" draggable="false">
+						<s:ButtonBar id="txtAlignButtonBar" width="100" height="20"
+									 arrowKeysWrapFocus="true"
+									 change="onAlignChangeHandler(event);" labelField="label">
+							<s:dataProvider>
+								<s:ArrayList>
+									<fx:Object width="20" height="20" label="@Resource(bundle='htmleditor', key='htmleditor.toolbar.alignleft')"
+											   icon="@Embed('/images/html/left-20.png')"
+											   value="{TextAlign.LEFT}"/>
+									<fx:Object width="20" height="20" label="@Resource(bundle='htmleditor', key='htmleditor.toolbar.aligncenter')"
+											   icon="@Embed('/images/html/center-20.png')"
+											   value="{TextAlign.CENTER}"/>
+									<fx:Object width="20" height="20" label="@Resource(bundle='htmleditor', key='htmleditor.toolbar.alignright')"
+											   icon="@Embed('/images/html/right-20.png')"
+											   value="{TextAlign.RIGHT}"/>
+									<fx:Object width="20" height="20" label="@Resource(bundle='htmleditor', key='htmleditor.toolbar.alignfull')"
+											   icon="@Embed('/images/html/full-20.png')"
+											   value="{TextAlign.JUSTIFY}"/>
+								</s:ArrayList>
+							</s:dataProvider>
+						</s:ButtonBar>
+					</code:DockableToolBar>
+					
+					<code:DockableToolBar id="fontToolbar" label="Fonts" draggable="false">
+						<s:HGroup gap="2">
+							<s:DropDownList id="fontCombo" width="150" height="20"
+											change="onFontChangeHandler(event);"
+											toolTip="@Resource(bundle='htmleditor', key='htmleditor.toolbar.font')">
+								<s:dataProvider>
+									<s:ArrayList source="{populateFontFamily()}"/>
+								</s:dataProvider>
+							</s:DropDownList>
+							<s:DropDownList id="sizeCombo" width="60" height="20"
+											change="onSizeChangeHandler(event);"
+											toolTip="@Resource(bundle='htmleditor', key='htmleditor.toolbar.size')">
+								<s:dataProvider>
+									<s:ArrayList source="{populateFontSize()}"/>
+								</s:dataProvider>
+							</s:DropDownList>
+						</s:HGroup>
+					</code:DockableToolBar>
+				</s:HGroup>
+				
+				<s:HGroup id="secondRow" paddingTop="3" paddingBottom="3" paddingLeft="2" verticalAlign="middle">
+					<code:DockableToolBar id="listUrlToolBar" draggable="false">
+						<s:HGroup gap="3">
+							<s:Button id="bulletBtn" width="20" height="20"
+									  click="onBulletHandler(event);" cornerRadius="0"
+									  icon="@Embed('/images/html/bullet-20.png')"
+									  toolTip="@Resource(bundle='htmleditor', key='htmleditor.toolbar.bulletedlist')"/>
+							<s:Button id="listBtn" width="20" height="20"
+									  click="onListHandler(event);" cornerRadius="0"
+									  icon="@Embed('/images/html/number-20.png')"
+									  toolTip="@Resource(bundle='htmleditor', key='htmleditor.toolbar.numberedlist')"/>
+							<s:Button id="linkBtn" width="20" height="20"
+									  click="openLinkEditor(event);" cornerRadius="0"
+									  icon="@Embed('/images/html/link-20.png')" 
+									  toolTip="@Resource(bundle='htmleditor', key='htmleditor.toolbar.addlink')"/>
+							<!-- For now, we just support deleting a link -->
+							<!--s:Button id="unlinkBtn" width="20" height="20"
+									  click="onClearClickHandler(event);" cornerRadius="0"
+									  icon="@Embed('/images/html/unlink-20.png')" toolTip="Link"/-->
+						</s:HGroup>
+					</code:DockableToolBar>
+					
+					<s:Line height="90%">
+						<s:stroke>
+							<s:SolidColorStroke caps="square" color="black" weight="1"/>
+						</s:stroke>
+					</s:Line>
+					
+					<code:DockableToolBar id="directionToolbar" draggable="false">
+						<s:HGroup gap="4">
+							<s:ButtonBar id="directionButtonBar" width="40" height="20"
+										 arrowKeysWrapFocus="true"
+										 change="onChangeDirection(event);" labelField="label">
+								<s:dataProvider>
+									<s:ArrayList>
+										<fx:Object width="20" height="20" label="@Resource(bundle='htmleditor', key='htmleditor.toolbar.lefttoright')"
+												   icon="@Embed('/images/html/ltr-20.png')"
+												   value="{Direction.LTR}"/>
+										<fx:Object width="20" height="20" label="@Resource(bundle='htmleditor', key='htmleditor.toolbar.righttoleft')"
+												   icon="@Embed('/images/html/rtl-20.png')"
+												   value="{Direction.RTL}"/>
+									</s:ArrayList>
+								</s:dataProvider>
+							</s:ButtonBar>
+						</s:HGroup>
+					</code:DockableToolBar>
+					
+					<s:Line height="90%">
+						<s:stroke>
+							<s:SolidColorStroke caps="square" color="black" weight="1"/>
+						</s:stroke>
+					</s:Line>
+					
+					<code:DockableToolBar id="clearNewToolbar" draggable="false">
+						<s:HGroup gap="4">
+							<s:Button id="newBtn" width="20" height="20"
+									  click="onNewClickHandler(event);" cornerRadius="0"
+									  icon="@Embed('/images/html/new-20.png')" toolTip="@Resource(bundle='htmleditor', key='htmleditor.toolbar.newdocument')"/>
+							<s:Button id="clearFormatBtn" width="20" height="20"
+									  click="onClearClickHandler(event);" cornerRadius="0"
+									  icon="@Embed('/images/html/clear-20.png')" toolTip="@Resource(bundle='htmleditor', key='htmleditor.toolbar.clearformat')"/>
+						</s:HGroup>
+					</code:DockableToolBar>
+				</s:HGroup>
+				
+			</s:Group>
+		</code:Docker>
+	</panels:topControlBarContent>
+	
+	<s:RichEditableText id="editor" width="100%" height="100%" minHeight="200" focusEnabled="false"/>
+</panels:TopControlBarPanel>

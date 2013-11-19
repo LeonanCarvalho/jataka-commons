@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+            http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/tx
+            http://www.springframework.org/schema/tx/spring-tx.xsd
+            http://www.springframework.org/schema/aop
+            http://www.springframework.org/schema/aop/spring-aop.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<bean id="jmxCommons" class="org.jatakasource.common.svc.jmx.JmxCommonsImpl" lazy-init="false"/>
+   
+   	<bean id="log4jMBean" class="org.jatakasource.common.svc.jmx.Log4jMBean" lazy-init="false"/>
+   
+    <!-- Load RMI host and port. -->
+    <bean id="jmxPropertiesLoader" class="org.jatakasource.common.jmx.JmxPropertiesLoaderImpl" init-method="initialize" />
+
+    <!-- JMX Registry -->
+    <!-- Override Spring implementation and set port from jmxPropertiesLoader -->
+    <bean id="jmxRegistry" class="org.jatakasource.common.jmx.RmiRegistryFactoryBean" depends-on="jmxPropertiesLoader" />
+
+    <!-- Expose JMX over RMI -->
+    <!-- Override Spring implementation and set serviceUrl from jmxPropertiesLoader -->
+    <bean id="jmxServerConnector" class="org.jatakasource.common.jmx.ConnectorServerFactoryBean" depends-on="jmxRegistry"
+        p:objectName="org.jatakasource.common.server.jmx:name=${org.jatakasource.common.instance.name}" />
+
+    <!-- Export JMX with XML -->
+    <bean id="jmxAutoExporter" class="org.springframework.jmx.export.annotation.AnnotationMBeanExporter"
+        p:autodetect="true" p:autodetectMode="2">
+    </bean>
+
+    <bean id="jmxManualExporter" class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
+        <property name="beans">
+            <map>
+                <entry key="org.jatakasource.common.server.log4j:name=${org.jatakasource.common.instance.name}" value-ref="log4jMBean" />
+            </map>
+        </property>
+    </bean>
+    
+    <import resource="common-jmx-client-context.xml" />
+</beans>

@@ -15,35 +15,13 @@
 
 	<name>COMMON ${project.artifactId} :: Flex parent pom</name>
 
-	<profiles>
-		<profile>
-			<id>windows</id>
-			<activation>
-				<os>
-					<family>Windows</family>
-				</os>
-			</activation>
-			<properties>
-				<flex.home>C:\opt\flex-sdks\4.5.1</flex.home>
-				<flex.wrapper.target>target</flex.wrapper.target>
-			</properties>
-		</profile>
-	
-		<profile>
-			<id>Linux</id>
-			<activation>
-				<os>
-					<family>unix</family>
-				</os>
-			</activation>
+	<properties>
+		<flashplayer.version.swf>14</flashplayer.version.swf>
+		<flex.player.version.major>11</flex.player.version.major>
+		<flex.player.version.minor>1</flex.player.version.minor>
+		<flex.player.version.revision>0</flex.player.version.revision>
+	</properties>
 
-			<properties>
-				<flex.home>/opt/flex-sdks/4.5.1</flex.home>
-				<flex.wrapper.target>${basedir}/target</flex.wrapper.target>
-			</properties>
-		</profile>
-	</profiles>
-	
 	<build>
 		<sourceDirectory>${basedir}/src/main/flex</sourceDirectory>
 		<resources>
@@ -53,6 +31,29 @@
 		</resources>
 
 		<plugins>
+
+			<!-- Add src/main/resources to flex compiler class path -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+
+				<executions>
+					<execution>
+						<id>add-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+		                                                <source>src/main/resources</source>
+                                		                <source>src/main/modules</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 			<plugin>
 				<groupId>org.sonatype.flexmojos</groupId>
 				<artifactId>flexmojos-maven-plugin</artifactId>
@@ -60,32 +61,15 @@
 				<extensions>true</extensions>
 
 				<configuration>
-					<configurationReport>true</configurationReport>
-					<sourcePaths>
-						<path>${project.basedir}/src/main/flex/</path>
-						<path>${project.basedir}/src/main/resources/</path>
-						<path>${project.basedir}/src/main/modules/</path>
-						<path>${project.basedir}/src/main/locales/{locale}</path>
-					</sourcePaths>
-
-					<resourceBundlePath>${basedir}/src/main/locales/{locale}</resourceBundlePath>
+					<localesSourcePath>${basedir}/src/main/locales/{locale}</localesSourcePath>
 					<allowSourcePathOverlap>true</allowSourcePathOverlap>
 
-					<definesDeclaration>
-						<property>
-							<name>CONFIG::DEBUGIP</name>
-							<value>"127.0.0.1"</value>
-						</property>
-					</definesDeclaration>
-
-					<!-- Fix for Mojos's < 4 -->
-					<configFiles>
-						<configFile>flex-config-swf-version-11.xml</configFile>
-					</configFiles>
-
-					<compiledLocales>
+					<swfVersion>${flashplayer.version.swf}</swfVersion>
+					<targetPlayer>${flex.player.version.major}.${flex.player.version.minor}.${flex.player.version.revision}</targetPlayer>
+					
+					<localesCompiled>
 						<locale>en_US</locale>
-					</compiledLocales>
+					</localesCompiled>
 				</configuration>
 
 				<dependencies>
@@ -125,25 +109,9 @@
 
 		<dependency>
 			<groupId>com.adobe.flex.framework</groupId>
-			<artifactId>framework</artifactId>
-			<version>${flex.version}</version>
-			<type>rb.swc</type>
-			<classifier>en_US</classifier>
-		</dependency>
-
-		<dependency>
-			<groupId>com.adobe.flex.framework</groupId>
 			<artifactId>osmf</artifactId>
 			<version>${flex.version}</version>
 			<type>swc</type>
-		</dependency>
-
-		<dependency>
-			<groupId>com.adobe.flex.framework</groupId>
-			<artifactId>osmf</artifactId>
-			<version>${flex.version}</version>
-			<type>rb.swc</type>
-			<classifier>en_US</classifier>
 		</dependency>
 
 		<dependency>
@@ -155,25 +123,9 @@
 
 		<dependency>
 			<groupId>com.adobe.flex.framework</groupId>
-			<artifactId>rpc</artifactId>
-			<version>${flex.version}</version>
-			<type>rb.swc</type>
-			<classifier>en_US</classifier>
-		</dependency>
-
-		<dependency>
-			<groupId>com.adobe.flex.framework</groupId>
 			<artifactId>spark</artifactId>
 			<version>${flex.version}</version>
 			<type>swc</type>
-		</dependency>
-
-		<dependency>
-			<groupId>com.adobe.flex.framework</groupId>
-			<artifactId>spark</artifactId>
-			<version>${flex.version}</version>
-			<type>rb.swc</type>
-			<classifier>en_US</classifier>
 		</dependency>
 
 		<dependency>

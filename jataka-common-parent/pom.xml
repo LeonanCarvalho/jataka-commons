@@ -15,7 +15,7 @@
 		<revisionNumber>0</revisionNumber>
 		<releaseDate>0</releaseDate>
 		<flex.version>4.5.1.21328</flex.version>
-		<flex.mojos.version>3.8</flex.mojos.version>
+		<flex.mojos.version>4.0-RC2</flex.mojos.version>
 		<spring.version>3.2.0.RELEASE</spring.version>
 		<spring.security.version>3.1.3.RELEASE</spring.security.version>
 	</properties>
@@ -32,7 +32,7 @@
 			</modules>
 		</profile>
 		<profile>
-			<id>modules</id>
+			<id>all</id>
 			<activation>
 				<jdk>[1.3,1.7]</jdk>
 			</activation>
@@ -69,7 +69,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
-					<version>2.2</version>
+					<version>2.4</version>
 				</plugin>
 
 				<plugin>

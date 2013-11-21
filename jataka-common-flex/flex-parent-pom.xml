@@ -16,9 +16,9 @@
 	<name>COMMON ${project.artifactId} :: Flex parent pom</name>
 
 	<properties>
-		<flashplayer.version.swf>14</flashplayer.version.swf>
-		<flex.player.version.major>11</flex.player.version.major>
-		<flex.player.version.minor>1</flex.player.version.minor>
+		<flashplayer.version.swf>11</flashplayer.version.swf>
+		<flex.player.version.major>10</flex.player.version.major>
+		<flex.player.version.minor>2</flex.player.version.minor>
 		<flex.player.version.revision>0</flex.player.version.revision>
 	</properties>
 

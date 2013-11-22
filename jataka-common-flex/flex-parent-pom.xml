@@ -46,8 +46,8 @@
 						</goals>
 						<configuration>
 							<sources>
-		                                                <source>src/main/resources</source>
-                                		                <source>src/main/modules</source>
+								<source>src/main/resources</source>
+								<source>src/main/modules</source>
 							</sources>
 						</configuration>
 					</execution>
@@ -66,7 +66,7 @@
 
 					<swfVersion>${flashplayer.version.swf}</swfVersion>
 					<targetPlayer>${flex.player.version.major}.${flex.player.version.minor}.${flex.player.version.revision}</targetPlayer>
-					
+
 					<localesCompiled>
 						<locale>en_US</locale>
 					</localesCompiled>
@@ -203,7 +203,7 @@
 			<version>3.0.2</version>
 			<type>swc</type>
 		</dependency>
-		
+
 		<!-- flexible dashboard -->
 		<dependency>
 			<groupId>flexible</groupId>
@@ -211,16 +211,16 @@
 			<version>1.0.0</version>
 			<type>swc</type>
 		</dependency>
-		
+
 	</dependencies>
-	
+
 	<pluginRepositories>
 		<pluginRepository>
 			<id>flex-mojos-repository2</id>
 			<url>http://repository.sonatype.org/content/groups/flexgroup</url>
 		</pluginRepository>
 	</pluginRepositories>
-	
+
 	<repositories>
 		<repository>
 			<id>flexmojos repository</id>

@@ -1,32 +1,32 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-        <modelVersion>4.0.0</modelVersion>
-        <groupId>org.jatakasource.commons</groupId>
-        <artifactId>jataka-common-</artifactId>
-        <version>1.1.0</version>
-        <packaging>pom</packaging>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.jatakasource.commons</groupId>
+	<artifactId>jataka-common-</artifactId>
+	<version>1.1.0</version>
+	<packaging>pom</packaging>
 
-        <name>COMMON ${project.artifactId} :: Aggregator pom module</name>
+	<name>COMMON ${project.artifactId} :: Aggregator pom module</name>
 
-                        <modules>
-				<module>parent-pom.xml</module>
-				<module>parent-flex-pom.xml</module>
+	<modules>
+		<module>parent-pom.xml</module>
+		<module>parent-flex-pom.xml</module>
 
-                                <!-- Common modules -->
-                                <module>../jataka-common-utils</module>
-                                <module>../jataka-common-model</module>
+		<!-- Common modules -->
+		<module>../jataka-common-utils</module>
+		<module>../jataka-common-model</module>
 
-                                <module>../jataka-common-dao-api</module>
-                                <module>../jataka-common-dao-impl</module>
-                                <module>../jataka-common-svc-api</module>
-                                <module>../jataka-common-svc-impl</module>
+		<module>../jataka-common-dao-api</module>
+		<module>../jataka-common-dao-impl</module>
+		<module>../jataka-common-svc-api</module>
+		<module>../jataka-common-svc-impl</module>
 
-                                <module>../jataka-common-data</module>
-                                <module>../jataka-common-web</module>
-                                <module>../jataka-common-build</module>
+		<module>../jataka-common-data</module>
+		<module>../jataka-common-web</module>
+		<module>../jataka-common-build</module>
 
-                                <module>../jataka-common-flex</module>
-                        </modules>
+		<module>../jataka-common-flex</module>
+	</modules>
 
 </project>

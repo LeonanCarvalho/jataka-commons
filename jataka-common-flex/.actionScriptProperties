@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<actionScriptProperties analytics="false" mainApplicationPath="jataka-common-flex.as" projectUUID="f06f9ed2-39b7-4550-8668-f26b7d2ddf64" version="10">
-  <compiler additionalCompilerArguments="-locale en_US  -source-path=src\main\locales\{locale} -allow-source-path-overlap=true -load-config+=flex-config-swf-version-11.xml -define=CONFIG::DEBUGIP,&quot;'127.0.0.1'&quot;" autoRSLOrdering="true" copyDependentFiles="false" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="target" removeUnusedRSL="true" sourceFolderPath="src/main/flex" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
+<actionScriptProperties analytics="false" mainApplicationPath="jataka-common-flex.as" projectUUID="f06f9ed2-39b7-4550-8668-f26b7d2ddf64" version="11">
+  <compiler additionalCompilerArguments="-locale en_US  -source-path=src\main\locales\{locale} -allow-source-path-overlap=true -define=CONFIG::DEBUGIP,&quot;'127.0.0.1'&quot;" autoRSLOrdering="true" copyDependentFiles="false" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="target" removeUnusedRSL="true" sourceFolderPath="src/main/flex" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" useFlashSDK="false" verifyDigests="true" warn="true">
     <compilerSourcePath>
       <compilerSourcePathEntry kind="1" linkType="1" path="src/main/resources"/>
       <compilerSourcePathEntry kind="1" linkType="1" path="src/main/modules"/>
@@ -19,6 +19,7 @@
     <application path="jataka-common-flex.as"/>
   </applications>
   <modules/>
+  <workers/>
   <buildCSSFiles/>
   <flashCatalyst validateFlashCatalystCompatibility="false"/>
 </actionScriptProperties>

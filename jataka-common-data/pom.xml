@@ -6,11 +6,11 @@
 	<parent>
 		<groupId>org.jatakasource.commons</groupId>
 		<artifactId>jataka-common-parent</artifactId>
-		<version>1.1.0</version>
+		<version>2.0.0</version>
 	</parent>
 
 	<artifactId>jataka-common-data</artifactId>
-	<version>1.1.0</version>
+	<version>2.0.0</version>
 	<packaging>jar</packaging>
 
 	<name>COMMON ${project.artifactId} :: Schema creator jar</name>
@@ -19,13 +19,11 @@
 		<dependency>
 			<groupId>org.jatakasource.commons</groupId>
 			<artifactId>jataka-common-svc-impl</artifactId>
-			<version>1.1.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jatakasource.commons</groupId>
 			<artifactId>jataka-common-dao-impl</artifactId>
-			<version>1.1.0</version>
 		</dependency>
 
 		<!-- Required for Spring controllers (no interfaces) -->

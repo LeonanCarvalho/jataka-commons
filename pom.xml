@@ -15,7 +15,7 @@
 		<!-- Common modules -->
 		<module>jataka-common-utils</module>
 		<module>jataka-common-model</module>
-
+		<module>jataka-common-geo</module>
 		<module>jataka-common-dao-api</module>
 		<module>jataka-common-dao-impl</module>
 		<module>jataka-common-svc-api</module>

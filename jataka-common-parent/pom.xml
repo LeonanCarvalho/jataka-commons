@@ -171,40 +171,40 @@
 		<dependencies>
 			<!-- Internal Dependencies -->
 			<dependency>
-                        	<groupId>org.jatakasource.commons</groupId>
-                        	<artifactId>jataka-common-model</artifactId>
+				<groupId>org.jatakasource.commons</groupId>
+				<artifactId>jataka-common-model</artifactId>
 				<version>${project.version}</version>
-	                </dependency>
+			</dependency>
 
-	                <dependency>
-        	                <groupId>org.jatakasource.commons</groupId>
-                	        <artifactId>jataka-common-utils</artifactId>
-				<version>${project.version}</version>
-	                </dependency>
-
-        	        <dependency>
-                	        <groupId>org.jatakasource.commons</groupId>
-                        	<artifactId>jataka-common-dao-api</artifactId>
-				<version>${project.version}</version>
-	                </dependency>
-			
-        	        <dependency>
-                	        <groupId>org.jatakasource.commons</groupId>
-                        	<artifactId>jataka-common-dao-impl</artifactId>
-				<version>${project.version}</version>
-	                </dependency>
-	                
 			<dependency>
-                                <groupId>org.jatakasource.commons</groupId>
-                                <artifactId>jataka-common-svc-api</artifactId>
-                                <version>${project.version}</version>
-                        </dependency>
-
-	                <dependency>
-        	                <groupId>org.jatakasource.commons</groupId>
-                	        <artifactId>jataka-common-svc-impl</artifactId>
+				<groupId>org.jatakasource.commons</groupId>
+				<artifactId>jataka-common-utils</artifactId>
 				<version>${project.version}</version>
-	                </dependency>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jatakasource.commons</groupId>
+				<artifactId>jataka-common-dao-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jatakasource.commons</groupId>
+				<artifactId>jataka-common-dao-impl</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jatakasource.commons</groupId>
+				<artifactId>jataka-common-svc-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jatakasource.commons</groupId>
+				<artifactId>jataka-common-svc-impl</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 
 			<!-- Testing -->
 			<dependency>
@@ -445,7 +445,7 @@
 			<dependency>
 				<groupId>joda-time</groupId>
 				<artifactId>joda-time</artifactId>
-				<version>2.1</version>
+				<version>2.3</version>
 			</dependency>
 
 			<dependency>

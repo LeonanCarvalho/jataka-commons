@@ -13,7 +13,7 @@ public class LoadShpFileTest {
 	private static final Logger logger = Logger.getLogger(LoadShpFileTest.class);
 
 	@Test
-	public void isEnabledForGrulesTest() {
+	public void readShpFileTest() {
 		List<SimpleGeometry> geomentryList = null;
 
 		try {

@@ -4,9 +4,11 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 import org.geotools.data.shapefile.files.ShpFileType;
+import org.junit.Ignore;
 
+// Ignore this class from test
+@Ignore
 public enum TestShpFiles {
-
 	WORLD_TEST("simplified_land_polygons");
 
 	private static final String SHAPE_FILES_DIR = "/org/jatakasource/geo/data/";

@@ -1,9 +1,11 @@
 <assembly>
+	<id>jataka-commons-build</id>
 	<formats>
 		<format>tar.gz</format>
 	</formats>
 
-	<!-- DONOT include base directory so we could easily include this into RPM build  -->
+	<!-- DONOT include base directory so we could easily include this into RPM 
+		build -->
 	<includeBaseDirectory>false</includeBaseDirectory>
 
 	<fileSets>

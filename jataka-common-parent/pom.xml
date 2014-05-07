@@ -14,159 +14,18 @@
 		<buildNumber>0</buildNumber>
 		<revisionNumber>0</revisionNumber>
 		<releaseDate>0</releaseDate>
-		<flex.version>4.5.1.21328</flex.version>
-		<flex.mojos.version>4.0-RC2</flex.mojos.version>
-		<spring.version>3.2.0.RELEASE</spring.version>
-		<spring.security.version>3.1.3.RELEASE</spring.security.version>
+
+		<!-- 3party artifact versions -->
+		<slf4j.version>1.7.5</slf4j.version>
+		<log4j.version>1.2.17</log4j.version>
 		<hibernate.version>4.2.9.Final</hibernate.version>
-		<hibernate-validator.version>4.3.0.Final</hibernate-validator.version>
+		<hibernate-validator.version>4.2.0.Final</hibernate-validator.version>
+		<spring.version>3.2.8.RELEASE</spring.version>
+		<spring.security.version>3.2.3.RELEASE</spring.security.version>
+		<geotools.version>11.0</geotools.version>
+		<dbcp.version>1.4</dbcp.version>
 	</properties>
 
-	<build>
-		<defaultGoal>install</defaultGoal>
-		<finalName>${project.artifactId}</finalName>
-
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-eclipse-plugin</artifactId>
-					<version>2.8</version>
-				</plugin>
-
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-jar-plugin</artifactId>
-					<version>2.4</version>
-				</plugin>
-
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-assembly-plugin</artifactId>
-					<version>2.2-beta-5</version>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.4.3</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>2.4.3</version>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.0.2</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.5</version>
-				<configuration>
-					<encoding>UTF-8</encoding>
-					<includeEmptyDirs>true</includeEmptyDirs>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-						</manifest>
-						<manifestEntries>
-							<Implementation-Build>${buildNumber}</Implementation-Build>
-							<SCM-Revision>${revisionNumber}</SCM-Revision>
-						</manifestEntries>
-					</archive>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<inherited>false</inherited>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>2.2.1</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.4</version>
-				<configuration>
-					<manifest>
-						<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-					</manifest>
-					<archive>
-						<manifestEntries>
-							<Implementation-Title>${project.name}</Implementation-Title>
-							<Implementation-Version>${project.version}</Implementation-Version>
-							<Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
-							<Implementation-Build>${buildNumber}</Implementation-Build>
-							<SCM-Revision>${revisionNumber}</SCM-Revision>
-						</manifestEntries>
-					</archive>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.8</version>
-				<configuration>
-					<projectNameTemplate>[artifactId]</projectNameTemplate>
-					<wtpapplicationxml>true</wtpapplicationxml>
-					<wtpversion>2.0</wtpversion>
-					<manifest>${basedir}/src/main/resources/META-INF/MANIFEST.MF</manifest>
-					<downloadSources>true</downloadSources>
-					<ajdtVersion>none</ajdtVersion>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>1.3.1</version>
-				<executions>
-					<execution>
-						<id>enforce-maven</id>
-						<goals>
-							<goal>enforce</goal>
-						</goals>
-						<configuration>
-							<rules>
-								<requireMavenVersion>
-									<version>[3.0.0,3.0.5]</version>
-								</requireMavenVersion>
-							</rules>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 	<dependencyManagement>
 		<dependencies>
 			<!-- Internal Dependencies -->
@@ -543,4 +402,171 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<defaultGoal>install</defaultGoal>
+		<finalName>${project.artifactId}</finalName>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-eclipse-plugin</artifactId>
+					<version>2.8</version>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>2.4</version>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-assembly-plugin</artifactId>
+
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.4.3</version>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-report-plugin</artifactId>
+					<version>2.4.3</version>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>2.5</version>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-enforcer-plugin</artifactId>
+					<version>1.3.1</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<configuration>
+					<encoding>UTF-8</encoding>
+					<includeEmptyDirs>true</includeEmptyDirs>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+						</manifest>
+						<manifestEntries>
+							<Implementation-Build>${buildNumber}</Implementation-Build>
+							<SCM-Revision>${revisionNumber}</SCM-Revision>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<inherited>false</inherited>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<manifest>
+						<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+					</manifest>
+					<archive>
+						<manifestEntries>
+							<Implementation-Title>${project.name}</Implementation-Title>
+							<Implementation-Version>${project.version}</Implementation-Version>
+							<Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
+							<Implementation-Build>${buildNumber}</Implementation-Build>
+							<SCM-Revision>${revisionNumber}</SCM-Revision>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<projectNameTemplate>[artifactId]</projectNameTemplate>
+					<wtpapplicationxml>true</wtpapplicationxml>
+					<wtpversion>2.0</wtpversion>
+					<manifest>${basedir}/src/main/resources/META-INF/MANIFEST.MF</manifest>
+					<downloadSources>true</downloadSources>
+					<ajdtVersion>none</ajdtVersion>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>enforce-maven</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireMavenVersion>
+									<version>[3.0.0,3.0.5]</version>
+								</requireMavenVersion>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

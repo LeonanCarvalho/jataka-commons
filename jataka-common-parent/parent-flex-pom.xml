@@ -17,9 +17,15 @@
 	<name>COMMON ${project.artifactId} :: Flex parent pom</name>
 
 	<properties>
-		<flashplayer.version.swf>11</flashplayer.version.swf>
-		<flex.player.version.major>10</flex.player.version.major>
-		<flex.player.version.minor>2</flex.player.version.minor>
+		<!-- flex versions -->
+		<flex.version>4.6.b.23201</flex.version>
+		<flex.mojos.version>4.0-RC2</flex.mojos.version>
+		<flex.openscales.version>3.0.0-2014-15-2</flex.openscales.version>
+		<flex.parsley.version>3.0.0</flex.parsley.version>
+
+		<flashplayer.version.swf>14</flashplayer.version.swf>
+		<flex.player.version.major>11</flex.player.version.major>
+		<flex.player.version.minor>1</flex.player.version.minor>
 		<flex.player.version.revision>0</flex.player.version.revision>
 	</properties>
 
@@ -147,7 +153,7 @@
 			<groupId>com.adobe.flex.framework</groupId>
 			<artifactId>playerglobal</artifactId>
 			<version>${flex.version}</version>
-			<classifier>10.2</classifier>
+			<classifier>11.1</classifier>
 			<type>swc</type>
 		</dependency>
 		<dependency>

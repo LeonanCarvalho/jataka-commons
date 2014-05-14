@@ -1,5 +1,5 @@
 <assembly>
-	<id>jataka-commons-build</id>
+	<id>tar</id>
 	<formats>
 		<format>tar.gz</format>
 	</formats>
@@ -22,7 +22,7 @@
 
 		<fileSet>
 			<directory>${resources.home}/jataka-common</directory>
-			<outputDirectory>/jataka-common</outputDirectory>
+			<outputDirectory>/</outputDirectory>
 			<includes>
 				<include>**/*</include>
 			</includes>

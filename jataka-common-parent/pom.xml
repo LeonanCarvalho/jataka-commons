@@ -21,7 +21,7 @@
 		<hibernate.version>4.2.9.Final</hibernate.version>
 		<hibernate-validator.version>4.2.0.Final</hibernate-validator.version>
 		<spring.version>4.0.5.RELEASE</spring.version>
-		<spring.security.version>3.2.3.RELEASE</spring.security.version>
+		<spring.security.version>3.2.4.RELEASE</spring.security.version>
 		<geotools.version>11.0</geotools.version>
 		<dbcp.version>1.4</dbcp.version>
 	</properties>

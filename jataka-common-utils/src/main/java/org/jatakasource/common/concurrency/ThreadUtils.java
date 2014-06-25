@@ -1,9 +1,10 @@
 package org.jatakasource.common.concurrency;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ThreadUtils {
-	private static final Logger logger = Logger.getLogger(ThreadUtils.class);
+	private static final Logger logger = LoggerFactory.getLogger(ThreadUtils.class);
 
 	public static void start(Runnable executer, String threadName, boolean demon) {
 		Thread thread = new Thread(executer, threadName);
@@ -16,7 +17,7 @@ public class ThreadUtils {
 		try {
 			Thread.currentThread().sleep(mil);
 		} catch (InterruptedException e) {
-			logger.error(e);
+			logger.error("Error", e);
 		}
 	}
 

@@ -5,10 +5,11 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
 import org.jatakasource.common.network.AvailablePortFinder;
 import org.jatakasource.common.svc.jmx.JmxCommons;
 import org.jatakasource.common.svc.jmx.JmxCommonsImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -22,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 
 public class JmxPropertiesLoaderImpl implements JmxPropertiesLoader {
-	private static final Logger logger = Logger.getLogger(JmxPropertiesLoaderImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(JmxPropertiesLoaderImpl.class);
 
 	private static int jmxPort = JmxCommonsImpl.JMX_DEFAULT_PORT;
 

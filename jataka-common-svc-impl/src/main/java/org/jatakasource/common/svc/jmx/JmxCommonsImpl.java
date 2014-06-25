@@ -6,10 +6,11 @@ import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JmxCommonsImpl implements JmxCommons {
-	private static final Logger logger = Logger.getLogger(JmxCommonsImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(JmxCommonsImpl.class);
 
 	// Set default port outside of our port range 49152 + 10 + 1
 	private final static int DEFAULT_PORT = JMX_DEFAULT_PORT + JMX_PORT_FINDER_MAX_TRIES + 1;

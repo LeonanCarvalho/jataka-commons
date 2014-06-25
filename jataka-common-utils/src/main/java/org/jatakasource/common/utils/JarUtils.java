@@ -12,10 +12,11 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JarUtils {
-	private static final Logger logger = Logger.getLogger(JarUtils.class);
+	private static final Logger logger = LoggerFactory.getLogger(JarUtils.class);
 	public static final String JAR_EXTENSION = ".jar";
 
 	/**

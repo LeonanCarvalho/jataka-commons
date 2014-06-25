@@ -2,13 +2,14 @@ package org.jatakasource.common.date;
 
 import java.util.Date;
 
-import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SafeJodaDateFormat {
-	private final static Logger logger = Logger.getLogger(SafeSimpleDateFormat.class);
+	private final static Logger logger = LoggerFactory.getLogger(SafeSimpleDateFormat.class);
 
 	private final ThreadLocal<DateTimeFormatter> threadLocal;
 	private final String format;
@@ -35,7 +36,7 @@ public class SafeJodaDateFormat {
 			logger.error("Fail to parse Time date: " + e.getMessage());
 
 			if (logger.isDebugEnabled()) {
-				logger.error(e);
+				logger.error("Error", e);
 			}
 		}
 

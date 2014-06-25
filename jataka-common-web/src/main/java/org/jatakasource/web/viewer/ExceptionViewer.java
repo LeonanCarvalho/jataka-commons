@@ -6,15 +6,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.HttpStatus;
-import org.apache.log4j.Logger;
 import org.jatakasource.common.svc.exception.ServiceException;
 import org.jatakasource.common.svc.exception.ServiceRunTimeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
 public abstract class ExceptionViewer extends XmlViewer {
-	private final static Logger logger = Logger.getLogger(ExceptionViewer.class);
+	private final static Logger logger = LoggerFactory.getLogger(ExceptionViewer.class);
 
 	@Override
 	protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {

@@ -8,11 +8,12 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Viewer
 public class ImageViewer extends WebViewer {
-	private static final Logger logger = Logger.getLogger(ImageViewer.class);
+	private static final Logger logger = LoggerFactory.getLogger(ImageViewer.class);
 	public static final String IMAGE_TYPE_KEY = "IMAGE_TYPE_KEY";
 
 	@Override

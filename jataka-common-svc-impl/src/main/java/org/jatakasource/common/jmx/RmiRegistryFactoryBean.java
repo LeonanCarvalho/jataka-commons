@@ -5,11 +5,12 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class RmiRegistryFactoryBean extends org.springframework.remoting.rmi.RmiRegistryFactoryBean {
-	private final static Logger logger = Logger.getLogger(RmiRegistryFactoryBean.class);
+	private final static Logger logger = LoggerFactory.getLogger(RmiRegistryFactoryBean.class);
 
 	@Autowired
 	private JmxPropertiesLoader jmxPropertiesLoader;

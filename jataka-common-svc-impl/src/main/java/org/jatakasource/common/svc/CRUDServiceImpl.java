@@ -4,20 +4,20 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-
-import org.apache.log4j.Logger;
 import org.jatakasource.common.dao.BaseDao;
 import org.jatakasource.common.model.IDomainObject;
 import org.jatakasource.common.model.paging.Paging;
 import org.jatakasource.common.model.paging.Sorting;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public abstract class CRUDServiceImpl<T extends IDomainObject<ID>, ID extends Serializable> implements CRUDService<T, ID> {
-	private static final Logger logger = Logger.getLogger(CRUDServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(CRUDServiceImpl.class);
 
 	@Autowired
 	private CacheManager cacheManager;
@@ -111,7 +111,7 @@ public abstract class CRUDServiceImpl<T extends IDomainObject<ID>, ID extends Se
 		Cache cache = getCacheManager().getCache(serviceClass.getName());
 		if (cache != null) {
 			logger.debug("Clearing cache for Cache name: " + cache.getName());
-			cache.removeAll();
+			cache.clear();
 		} else {
 			logger.warn("Unable to find cache for Class: " + serviceClass.getName());
 		}

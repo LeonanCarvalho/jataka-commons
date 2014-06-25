@@ -3,18 +3,19 @@ package org.jatakasource.geo.data;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.geotools.feature.type.BasicFeatureTypes;
 import org.opengis.feature.Feature;
 import org.opengis.feature.Property;
 import org.opengis.referencing.operation.MathTransform;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.awt.PointShapeFactory.Square;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPolygon;
 
 public final class SimpleGeometry extends AbstractGeometryContainer<SimpleGeometryData> {
-	private static final Logger logger = Logger.getLogger(Square.class);
+	private static final Logger logger = LoggerFactory.getLogger(Square.class);
 
 	private static final SimpleGeometryMaker SHAPE_FILE_READER = new SimpleGeometryMaker();
 

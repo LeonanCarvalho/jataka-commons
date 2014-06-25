@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.StatelessSession;
@@ -22,6 +21,8 @@ import org.jatakasource.common.model.paging.Sorting.SortDirection;
 import org.jatakasource.common.model.paging.SortingElement;
 import org.jatakasource.common.properties.PropertiesUtils;
 import org.jatakasource.common.utils.ReflectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author yaniv-na
@@ -32,7 +33,7 @@ import org.jatakasource.common.utils.ReflectionUtils;
  */
 public abstract class BaseHibernateDao<T extends IDomainObject<ID>, ID extends Serializable> extends
 		GenericHibernateDao implements BaseDao<T, ID> {
-	private static final Logger logger = Logger.getLogger(BaseHibernateDao.class);
+	private static final Logger logger = LoggerFactory.getLogger(BaseHibernateDao.class);
 	private static final int IN_LIMIT = 200;
 
 	private Class<T> persistentClass;

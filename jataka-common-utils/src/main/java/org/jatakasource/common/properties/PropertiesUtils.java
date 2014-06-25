@@ -12,10 +12,11 @@ import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.math.NumberUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PropertiesUtils {
-	private static final Logger logger = Logger.getLogger(PropertiesUtils.class);
+	private static final Logger logger = LoggerFactory.getLogger(PropertiesUtils.class);
 
 	public static Properties get(String filePath) {
 		return get(filePath, true);

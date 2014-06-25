@@ -7,11 +7,12 @@ import java.util.concurrent.TimeUnit;
 
 import junit.framework.TestCase;
 
-import org.apache.log4j.Logger;
 import org.jatakasource.common.date.DateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DateUtilTest extends TestCase {
-	private static Logger logger = Logger.getLogger(DateUtilTest.class);
+	private static Logger logger = LoggerFactory.getLogger(DateUtilTest.class);
 
 	public void testGetMilliseconds() {
 		assertEquals(1, DateUtil.getMilliseconds(1, TimeUnit.MILLISECONDS));
@@ -29,28 +30,28 @@ public class DateUtilTest extends TestCase {
 			date1 = df.parse("2012-11-25 01:00:00");
 			date2 = df.parse("2012-11-26 00:00:59");
 		} catch (Exception e) {
-			logger.error(e);
+			logger.error("Error", e);
 		}
 		assertEquals(0, DateUtil.wholeDaysDiff(date1, date2));
 
 		try {
 			date2 = df.parse("2012-11-26 02:00:59");
 		} catch (Exception e) {
-			logger.error(e);
+			logger.error("Error", e);
 		}
 		assertEquals(1, DateUtil.wholeDaysDiff(date1, date2));
 
 		try {
 			date2 = df.parse("2012-11-27 00:00:59");
 		} catch (Exception e) {
-			logger.error(e);
+			logger.error("Error", e);
 		}
 		assertEquals(1, DateUtil.wholeDaysDiff(date1, date2));
 
 		try {
 			date2 = df.parse("2012-11-27 02:00:59");
 		} catch (Exception e) {
-			logger.error(e);
+			logger.error("Error", e);
 		}
 		assertEquals(2, DateUtil.wholeDaysDiff(date1, date2));
 
@@ -64,28 +65,28 @@ public class DateUtilTest extends TestCase {
 			date1 = df.parse("2012-11-25 01:00:00");
 			date2 = df.parse("2012-11-26 00:00:59");
 		} catch (Exception e) {
-			logger.error(e);
+			logger.error("Error", e);
 		}
 		assertEquals(1, DateUtil.partialDaysDiff(date1, date2));
 
 		try {
 			date2 = df.parse("2012-11-26 02:00:59");
 		} catch (Exception e) {
-			logger.error(e);
+			logger.error("Error", e);
 		}
 		assertEquals(1, DateUtil.partialDaysDiff(date1, date2));
 
 		try {
 			date2 = df.parse("2012-11-27 00:00:59");
 		} catch (Exception e) {
-			logger.error(e);
+			logger.error("Error", e);
 		}
 		assertEquals(2, DateUtil.partialDaysDiff(date1, date2));
 
 		try {
 			date2 = df.parse("2012-11-27 02:00:59");
 		} catch (Exception e) {
-			logger.error(e);
+			logger.error("Error", e);
 		}
 		assertEquals(2, DateUtil.partialDaysDiff(date1, date2));
 
@@ -99,14 +100,14 @@ public class DateUtilTest extends TestCase {
 			date1 = df.parse("2012-11-26 00:00:00 0");
 			date2 = df.parse("2012-11-26 00:00:30 0");
 		} catch (Exception e) {
-			logger.error(e);
+			logger.error("Error", e);
 		}
 		assertEquals(30, DateUtil.secondsDiff(date1, date2));
 
 		try {
 			date2 = df.parse("2012-11-25 23:59:30 0");
 		} catch (Exception e) {
-			logger.error(e);
+			logger.error("Error", e);
 		}
 		assertEquals(-30, DateUtil.secondsDiff(date1, date2));
 	}
@@ -116,7 +117,7 @@ public class DateUtilTest extends TestCase {
 			Date date = DateUtil.STANDARD_ISO_DATE_FORMAT.parse("2011-02-22T16:45:43.3473839+02:00");
 			date.toString();
 		} catch (Exception e) {
-			logger.error(e);
+			logger.error("Error", e);
 		}
 
 		assertTrue(true);

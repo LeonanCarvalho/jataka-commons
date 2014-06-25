@@ -8,14 +8,13 @@ import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.geotools.data.FileDataStore;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.referencing.CRS;
-import org.jatakasource.geo.data.IGeometryData;
 import org.jatakasource.geo.data.IGeometryContainer;
 import org.jatakasource.geo.data.IGeometryContainerReader;
+import org.jatakasource.geo.data.IGeometryData;
 import org.opengis.feature.Feature;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.FactoryException;
@@ -23,10 +22,12 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class ShpFileReaderImpl implements IShpFileReader {
-	private static final Logger logger = Logger.getLogger(ShpFileReaderImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(ShpFileReaderImpl.class);
 	
 	private static final String EPSG_4326 = "EPSG:4326";
 	private final String crsEPSGstr;

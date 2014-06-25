@@ -4,11 +4,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.simpleframework.xml.Serializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class XMLRendererUtils {
-	private static Logger logger = Logger.getLogger(XMLRendererUtils.class);
+	private static Logger logger = LoggerFactory.getLogger(XMLRendererUtils.class);
 
 	/**
 	 * Convert list of model objects (originalList Example: List<Language>) to ListRenderer object (returnTypeList Example: LanguageListRenderer) that include renderer objects

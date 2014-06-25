@@ -4,12 +4,13 @@ import java.io.IOException;
 
 import javax.management.JMException;
 
-import org.apache.log4j.Logger;
 import org.jatakasource.common.svc.jmx.JmxCommons;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class ConnectorServerFactoryBean extends org.springframework.jmx.support.ConnectorServerFactoryBean {
-	private static final Logger logger = Logger.getLogger(ConnectorServerFactoryBean.class);
+	private static final Logger logger = LoggerFactory.getLogger(ConnectorServerFactoryBean.class);
 
 	@Autowired
 	private JmxCommons jmxCommons;

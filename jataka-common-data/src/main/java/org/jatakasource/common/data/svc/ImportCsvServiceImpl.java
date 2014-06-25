@@ -6,11 +6,12 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.log4j.Logger;
 import org.jatakasource.common.data.DataReader;
 import org.jatakasource.common.data.dao.DataReaderDao;
 import org.jatakasource.common.utils.FileUtils;
 import org.jatakasource.common.utils.JarUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +23,7 @@ import au.com.bytecode.opencsv.bean.HeaderColumnNameMappingStrategy;
 @Service
 @Transactional
 public class ImportCsvServiceImpl implements ImportCsvService {
-	private final static Logger logger = Logger.getLogger(ImportCsvServiceImpl.class);
+	private final static Logger logger = LoggerFactory.getLogger(ImportCsvServiceImpl.class);
 
 	@Autowired
 	private DataReaderDao domainObjectDao;

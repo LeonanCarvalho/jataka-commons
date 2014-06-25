@@ -7,10 +7,11 @@ import java.io.InputStreamReader;
 import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FileUtils {
-	private static final Logger logger = Logger.getLogger(FileUtils.class);
+	private static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
 
 	public static void closeSilently(InputStream stream) {
 		try {
@@ -57,7 +58,7 @@ public class FileUtils {
 			content = IOUtils.toString(source);
 			closeSilently(source);
 		} catch (IOException e) {
-			logger.error(e);
+			logger.error("Error", e);
 		}
 
 		return content;
@@ -74,7 +75,7 @@ public class FileUtils {
 			content = IOUtils.toByteArray(source);
 			closeSilently(source);
 		} catch (IOException e) {
-			logger.error(e);
+			logger.error("Error", e);
 		}
 
 		return content;

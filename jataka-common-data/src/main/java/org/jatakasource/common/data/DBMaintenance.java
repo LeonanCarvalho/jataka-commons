@@ -2,17 +2,18 @@ package org.jatakasource.common.data;
 
 import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.jatakasource.common.data.svc.InitializeDatabaseService;
 import org.jatakasource.common.spring.SpringBean;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class DBMaintenance {
-	private static Logger logger = Logger.getLogger(DBMaintenance.class);
+	private static Logger logger = LoggerFactory.getLogger(DBMaintenance.class);
 
 	public static void main(String[] args) {
 		// Create args object
@@ -68,7 +69,7 @@ public class DBMaintenance {
 		try {
 			context = new ClassPathXmlApplicationContext(contextFiles);
 		} catch (Throwable e) {
-			logger.error(e);
+			logger.error("Error Loading application context !!!", e);
 		}
 
 		return context;

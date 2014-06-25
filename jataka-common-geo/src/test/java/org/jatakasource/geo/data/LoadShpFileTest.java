@@ -4,13 +4,14 @@ import java.util.List;
 
 import junit.framework.Assert;
 
-import org.apache.log4j.Logger;
 import org.jatakasource.geo.esri.IShpFileReader;
 import org.jatakasource.geo.esri.ShpFileReaderImpl;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LoadShpFileTest {
-	private static final Logger logger = Logger.getLogger(LoadShpFileTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(LoadShpFileTest.class);
 
 	@Test
 	public void readShpFileTest() {

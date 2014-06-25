@@ -4,10 +4,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SafeSimpleDateFormat {
-	private final static Logger logger = Logger.getLogger(SafeSimpleDateFormat.class);
+	private final static Logger logger = LoggerFactory.getLogger(SafeSimpleDateFormat.class);
 
 	private final ThreadLocal<SimpleDateFormat> threadLocal;
 
@@ -31,7 +32,7 @@ public class SafeSimpleDateFormat {
 			logger.error("Fail to parse Time date: " + e.getMessage());
 
 			if (logger.isDebugEnabled()) {
-				logger.error(e);
+				logger.error("Error", e);
 			}
 		}
 

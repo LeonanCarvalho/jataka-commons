@@ -7,6 +7,7 @@ import javax.servlet.ServletContext;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.web.context.support.ServletContextPropertyPlaceholderConfigurer;
 
+@Deprecated
 public class ContextPlaceholderConfigurer extends ServletContextPropertyPlaceholderConfigurer {
 	private static final String CACHE_SYSTEM_PROPERTY = "ehcache.disk.store.dir";
 	

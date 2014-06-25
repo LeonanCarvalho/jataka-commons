@@ -11,6 +11,7 @@ import org.jatakasource.common.startup.CommonStartup;
 import org.jatakasource.common.svc.jmx.JmxCommons;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 
+@Deprecated
 public abstract class ContextAttributesPlaceholderConfigurer extends ContextPlaceholderConfigurer {
 	public ContextAttributesPlaceholderConfigurer() {
 		super();

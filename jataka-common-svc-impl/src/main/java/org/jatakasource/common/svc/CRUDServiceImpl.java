@@ -8,20 +8,10 @@ import org.jatakasource.common.dao.BaseDao;
 import org.jatakasource.common.model.IDomainObject;
 import org.jatakasource.common.model.paging.Paging;
 import org.jatakasource.common.model.paging.Sorting;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public abstract class CRUDServiceImpl<T extends IDomainObject<ID>, ID extends Serializable> implements CRUDService<T, ID> {
-	private static final Logger logger = LoggerFactory.getLogger(CRUDServiceImpl.class);
-
-	@Autowired
-	private CacheManager cacheManager;
-
 	private Class<T> serviceClass;
 
 	public abstract BaseDao<T, ID> getDao();
@@ -103,18 +93,12 @@ public abstract class CRUDServiceImpl<T extends IDomainObject<ID>, ID extends Se
 		getDao().updateAll(entities);
 	}
 
-	private CacheManager getCacheManager() {
-		return cacheManager;
+	public Class<T> getServiceClass() {
+		return serviceClass;
 	}
 
-	public void clearCache() {
-		Cache cache = getCacheManager().getCache(serviceClass.getName());
-		if (cache != null) {
-			logger.debug("Clearing cache for Cache name: " + cache.getName());
-			cache.clear();
-		} else {
-			logger.warn("Unable to find cache for Class: " + serviceClass.getName());
-		}
+	public void setServiceClass(Class<T> serviceClass) {
+		this.serviceClass = serviceClass;
 	}
-
+	
 }

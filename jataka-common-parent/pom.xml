@@ -523,7 +523,6 @@
 			</plugin>
 
 			<plugin>
-				<inherited>false</inherited>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
 				<executions>

@@ -6,6 +6,11 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 
+/**
+ * {@link PropertyPlaceholderConfigurer} subclass that expose resolvePlaceholder
+ * as public method and resolve properties from system properties and/or
+ * environment variables.
+ */
 public class SystemPlaceholderConfigurer extends PropertyPlaceholderConfigurer {
 	private Properties props;
 

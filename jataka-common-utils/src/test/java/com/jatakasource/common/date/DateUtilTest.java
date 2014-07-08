@@ -114,7 +114,7 @@ public class DateUtilTest extends TestCase {
 
 	public void testExternalAPIFormat() {
 		try {
-			Date date = DateUtil.STANDARD_ISO_DATE_FORMAT.parse("2011-02-22T16:45:43.3473839+02:00");
+			Date date = DateUtil.STANDARD_ISO_DATE_FORMAT.parse("2011-02-22T16:45:43");
 			date.toString();
 		} catch (Exception e) {
 			logger.error("Error", e);

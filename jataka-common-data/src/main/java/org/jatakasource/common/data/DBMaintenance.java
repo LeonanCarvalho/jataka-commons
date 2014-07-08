@@ -78,7 +78,7 @@ public class DBMaintenance {
 	public static class DBMaintenanceArgs {
 		@Argument(required = true, usage = "create|initialize|upgrade|reset", metaVar = "action", index = 0)
 		private String action;
-		@Argument(required = false, usage = "en_US|iw_IL", metaVar = "locale", index = 1)
+		@Argument(required = false, usage = "en_US|he_IL", metaVar = "locale", index = 1)
 		private String locale;
 	}
 

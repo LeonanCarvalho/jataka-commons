@@ -5,7 +5,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.activation.UnsupportedDataTypeException;
 
-import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Days;
@@ -49,7 +48,7 @@ public class DateUtil {
 	 * @return the period in days
 	 */
 	public static int partialDaysDiff(Date startDate, Date endDate) {
-		return Days.daysBetween(new DateMidnight(startDate), new DateMidnight(endDate)).getDays();
+		return Days.daysBetween(new DateTime(startDate).withTimeAtStartOfDay(), new DateTime(endDate).withTimeAtStartOfDay()).getDays();
 	}
 
 	private static int secondsDiff(DateTime startDate, DateTime endDate) {
@@ -125,6 +124,8 @@ public class DateUtil {
 			return plusSeconds(date, interval);
 		case MILLISECONDS:
 			return plusMillis(date, interval);
+		default:
+			break;
 		}
 
 		return date;
@@ -142,6 +143,8 @@ public class DateUtil {
 			return minusSeconds(date, interval);
 		case MILLISECONDS:
 			return minusMillis(date, interval);
+		default:
+			break;
 		}
 
 		return date;
@@ -159,6 +162,8 @@ public class DateUtil {
 			return interval;
 		case MILLISECONDS:
 			return interval / DateTimeConstants.MILLIS_PER_SECOND;
+		default:
+			break;
 		}
 
 		throw new UnsupportedDataTypeException();
@@ -180,6 +185,8 @@ public class DateUtil {
 			break;
 		case SECONDS:
 			millisPerUnit = DateTimeConstants.MILLIS_PER_SECOND;
+			break;
+		default:
 			break;
 		}
 

@@ -10,8 +10,6 @@
 	<name>COMMON ${project.artifactId} :: Aggregator pom module</name>
 
 	<modules>
-		<module>jataka-common-parent/parent-flex-pom.xml</module>
-
 		<!-- Common modules -->
 		<module>jataka-common-utils</module>
 		<module>jataka-common-model</module>
@@ -24,8 +22,6 @@
 		<module>jataka-common-data</module>
 		<module>jataka-common-web</module>
 		<module>jataka-common-build</module>
-
-		<module>jataka-common-flex</module>
 	</modules>
 
 </project>

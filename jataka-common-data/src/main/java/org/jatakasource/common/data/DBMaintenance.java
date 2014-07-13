@@ -9,7 +9,6 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class DBMaintenance {
@@ -38,7 +37,7 @@ public class DBMaintenance {
 		logger.info("START DBMaintenance ..." + dbArgs.action);
 
 		// Initialize spring context to create DB schema server
-		ApplicationContext applicationContext = null;
+		ClassPathXmlApplicationContext applicationContext = null;
 
 		switch (Action.valueOf(dbArgs.action.toUpperCase())) {
 
@@ -53,16 +52,26 @@ public class DBMaintenance {
 		default:
 			break;
 		}
-
+		
+		applicationContext.close();
+		
+		try {
+			// Wait for Asynchronous tasks to complete
+			// e.g - hsqldb persistence is not synchronized 
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			logger.error("Error while tring to sleep.", e);
+		}
+		
 		System.exit(0);
 	}
 
-	public static ApplicationContext createApplicationContext() {
+	public static ClassPathXmlApplicationContext createApplicationContext() {
 		String[] contextFiles = new String[] { "db-maintenance-context.xml" };
 		return new ClassPathXmlApplicationContext(contextFiles);
 	}
 
-	public static ApplicationContext inititializeApplicationContext() {
+	public static ClassPathXmlApplicationContext inititializeApplicationContext() {
 		String[] contextFiles = new String[] { "common-data-context.xml", "db-maintenance-context.xml" };
 		ClassPathXmlApplicationContext context = null;
 

@@ -50,5 +50,4 @@ pgsql_load_file() {
         local sql_file="$4"
 
         psql -U "${db_user}" -h "${host}" -d "${db}" -f "${sql_file}"
-}
 

@@ -7,6 +7,7 @@
 		<groupId>org.jatakasource.commons</groupId>
 		<artifactId>jataka-common-parent</artifactId>
 		<version>2.0.0</version>
+		<relativePath></relativePath>
 	</parent>
 
 	<artifactId>jataka-common-model</artifactId>
